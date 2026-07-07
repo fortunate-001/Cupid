@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cupid – AI Assistant</title>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@latest/css/boxicons.min.css" />
+</head>
+<body>
+  <div id="app">
+    
+    <!-- ============================================ -->
+    <!-- SIDEBAR                                      -->
+    <!-- ============================================ -->
+    <div id="sidebar" class="sidebar">
+      <div class="sidebar-logo">
+        <span class="sidebar-logo-text">Cupid</span>
+      </div>
+
+      <button id="newChatBtn" class="new-chat-btn">
+        <i class="bx bx-plus"></i> New chat
+      </button>
+
+      <div class="chat-history" id="chatHistoryList">
+        <div class="chat-history-label">Recent</div>
+        <div class="history-item" style="opacity:0.5;cursor:default;">
+          <i class="bx bx-message"></i>
+          <span>No conversations yet</span>
+        </div>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-info" id="sidebarUserInfo">
+          <div class="user-avatar" id="sidebarAvatar">U</div>
+          <div class="user-details">
+            <span class="user-name" id="sidebarUserName">Guest</span>
+            <span class="user-tier" id="sidebarUserTier">Free</span>
+          </div>
+        </div>
+        <div class="sidebar-actions">
+          <button class="sidebar-action-btn" id="sidebarDashboardBtn" title="Dashboard">
+            <i class="bx bx-grid-alt"></i>
+          </button>
+          <button class="sidebar-action-btn" id="sidebarSettingsBtn" title="Settings">
+            <i class="bx bx-cog"></i>
+          </button>
+          <button class="sidebar-action-btn" id="sidebarLogoutBtn" title="Logout">
+            <i class="bx bx-log-out"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MAIN AREA                                    -->
+    <!-- ============================================ -->
+    <div id="mainArea" class="main-area">
+      
+      <!-- ============================================ -->
+      <!-- AUTH SCREEN                                  -->
+      <!-- ============================================ -->
+      <div id="authScreen" class="auth-screen">
+        <div class="auth-container">
+          <div class="auth-header">
+            <span class="auth-logo">✦</span>
+            <h1>Cupid</h1>
+            <p>Your AI assistant</p>
+          </div>
+          
+          <div id="loginForm" class="auth-form">
+            <h2>Welcome Back</h2>
+            <input type="email" id="loginEmail" placeholder="Email" />
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <button id="loginBtn">Log In</button>
+            <div class="auth-links">
+              <a href="#" id="forgotPasswordLink" class="auth-link">Forgot password?</a>
+              <span class="auth-switch">
+                Don't have an account? <span id="showSignup">Sign Up</span>
+              </span>
+            </div>
+          </div>
+          
+          <div id="signupForm" class="auth-form hidden">
+            <h2>Create Account</h2>
+            <input type="text" id="signupName" placeholder="Your Name" />
+            <input type="email" id="signupEmail" placeholder="Email" />
+            <input type="password" id="signupPassword" placeholder="Password (min 6 chars)" />
+            <button id="signupBtn">Get Started</button>
+            <p class="auth-switch">
+              Already have an account? <span id="showLogin">Log In</span>
+            </p>
+            <p class="auth-note">
+              New users get 1 month of Cupid Pro free
+            </p>
+          </div>
+          
+          <div id="authError" class="auth-error hidden"></div>
+          
+          <div class="guest-divider">
+            <span>or</span>
+          </div>
+          
+          <button id="guestBtn" class="guest-btn">
+            <i class="bx bx-user"></i> Try as Guest
+          </button>
+          <p class="guest-note">
+            Limited access · No signup required
+          </p>
+        </div>
+      </div>
+
+      <!-- ============================================ -->
+      <!-- CHAT SCREEN                                  -->
+      <!-- ============================================ -->
+      <div id="chatScreen" class="chat-screen">
+        <div class="chat-header">
+          <div class="header-left">
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+              <i class="bx bx-menu"></i>
+            </button>
+            <div class="logo-container">
+              <span class="logo-text">Cupid</span>
+            </div>
+            <span class="status-dot" id="statusDot"></span>
+          </div>
+          <div class="header-right">
+            <span class="tier-badge" id="tierBadge">Free</span>
+            <span class="tier-badge guest-badge hidden" id="guestBadge">Guest</span>
+            <button class="settings-btn" id="settingsBtn" title="Settings">
+              <i class="bx bx-cog"></i>
+            </button>
+            <button class="logout-btn" id="logoutBtn" title="Logout">
+              <i class="bx bx-log-out"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- Subscription Bar -->
+        <div class="subscription-bar" id="subscriptionBar">
+          <span id="subscriptionText">Free plan · Limited complex queries</span>
+          <button class="upgrade-btn" id="upgradeBtn">Upgrade</button>
+        </div>
+
+        <div class="messages-container" id="messagesContainer">
+          <div class="welcome-message" id="welcomeMessage">
+            <div class="welcome-avatar">✦</div>
+            <h2>Hello</h2>
+            <p id="welcomeText">I'm Cupid, your AI assistant. How can I help?</p>
+            <p class="welcome-sub">Try: "Help me plan my day" or "Explain a concept"</p>
+          </div>
+        </div>
+
+          <!-- Input Area -->
+    <div class="input-area">
+      <div class="input-wrapper">
+        <input 
+          type="text" 
+          id="messageInput" 
+          placeholder="Type a message... or click 📎 to upload an image"
+          autocomplete="off"
+        />
+        <!-- ✅ IMAGE UPLOAD BUTTON -->
+        <label for="imageUpload" class="image-upload-btn" title="Upload image for editing">
+          <i class="bx bx-image-add"></i>
+        </label>
+        <input 
+          type="file" 
+          id="imageUpload" 
+          accept="image/*" 
+          style="display:none"
+        />
+        <button id="sendBtn">
+          <i class="bx bx-up-arrow-alt"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- SETTINGS PAGE                                -->
+    <!-- ============================================ -->
+    <div id="settingsPage" class="settings-page hidden">
+      <div class="settings-page-header">
+        <button class="settings-back-btn" id="settingsBackBtn">
+          <i class="bx bx-arrow-back"></i>
+        </button>
+        <h2>Settings</h2>
+      </div>
+      <div class="settings-page-body">
+        <div class="settings-sidebar">
+          <button class="settings-category-item active" data-panel="general">
+            <i class="bx bx-cog"></i> General
+          </button>
+          <button class="settings-category-item" data-panel="profile">
+            <i class="bx bx-user"></i> Profile
+          </button>
+          <button class="settings-category-item" data-panel="data">
+            <i class="bx bx-data"></i> Data
+          </button>
+          <button class="settings-category-item" data-panel="about">
+            <i class="bx bx-info-circle"></i> About
+          </button>
+        </div>
+        
+        <div class="settings-content">
+          <!-- General Panel -->
+          <div id="settingsGeneral" class="settings-panel active">
+            <h3>General</h3>
+            <p class="settings-subtitle">Customize your experience</p>
+            
+            <div class="settings-group">
+              <label>Theme</label>
+              <div class="theme-options">
+                <button class="theme-option" data-theme="light">
+                  <i class="bx bx-sun"></i>
+                  <span>Light</span>
+                </button>
+                <button class="theme-option active" data-theme="dark">
+                  <i class="bx bx-moon"></i>
+                  <span>Dark</span>
+                </button>
+                <button class="theme-option" data-theme="system">
+                  <i class="bx bx-desktop"></i>
+                  <span>System</span>
+                </button>
+              </div>
+            </div>
+            
+            <div class="settings-group">
+              <label for="languageSelect">Language</label>
+              <select id="languageSelect" class="settings-select">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="ja">日本語</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Profile Panel -->
+          <div id="settingsProfile" class="settings-panel">
+            <h3>Profile</h3>
+            <p class="settings-subtitle">Your account information</p>
+            
+            <div class="profile-avatar-large" id="settingsAvatarLarge">U</div>
+            <div class="profile-info">
+              <p><strong>Name:</strong> <span id="settingsUserName">User</span></p>
+              <p><strong>Email:</strong> <span id="settingsUserEmail">Not logged in</span></p>
+              <p><strong>Plan:</strong> <span id="settingsUserPlan">Free</span></p>
+            </div>
+            <button id="settingsUpgradeBtn" class="primary-btn" style="margin-top:16px;max-width:200px;">Upgrade Plan</button>
+          </div>
+          
+          <!-- Data Panel -->
+          <div id="settingsData" class="settings-panel">
+            <h3>Data</h3>
+            <p class="settings-subtitle">Manage your data</p>
+            
+            <div class="settings-group">
+              <button id="clearHistoryBtn" class="danger-btn" style="max-width:300px;">Clear Chat History</button>
+            </div>
+            <div class="settings-group">
+              <button id="settingsSignupBtn" class="primary-btn hidden" style="max-width:300px;">Sign Up to Save Your Chats</button>
+            </div>
+          </div>
+          
+          <!-- About Panel -->
+          <div id="settingsAbout" class="settings-panel">
+            <h3>About</h3>
+            <p class="settings-subtitle">Learn more about Cupid</p>
+            
+            <div class="settings-group">
+              <p><strong>Version:</strong> 1.0.0</p>
+              <p><strong>Description:</strong> Cupid is an AI assistant powered by Groq's Llama 3 model.</p>
+              <p><strong>Features:</strong></p>
+              <ul style="color:var(--text-secondary);padding-left:20px;margin-top:8px;">
+                <li>AI-powered conversations</li>
+                <li>Chat history</li>
+                <li>Customizable themes</li>
+                <li>Guest mode</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- FORGOT PASSWORD MODAL                        -->
+    <!-- ============================================ -->
+    <div id="forgotPasswordModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" id="forgotPasswordClose">&times;</button>
+        <h2>Reset Password</h2>
+        <p style="color:var(--text-secondary);margin-bottom:16px;">Enter your email address and we'll send you a link to reset your password.</p>
+        <div class="auth-form">
+          <input type="email" id="resetEmail" placeholder="Email" />
+          <button id="resetPasswordBtn">Send Reset Link</button>
+          <p class="auth-switch">
+            <span id="backToLogin">Back to Login</span>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- LOGOUT CONFIRM MODAL                         -->
+    <!-- ============================================ -->
+    <div id="logoutModal" class="modal hidden">
+      <div class="modal-content" style="max-width:400px;text-align:center;">
+        <h2 style="margin-bottom:12px;">Logout</h2>
+        <p style="color:var(--text-secondary);margin-bottom:24px;">Are you sure you want to log out?</p>
+        <div style="display:flex;gap:12px;justify-content:center;">
+          <button id="logoutCancelBtn" class="secondary-btn" style="padding:10px 24px;border-radius:8px;border:1px solid var(--border-color);background:transparent;color:var(--text-primary);cursor:pointer;">Cancel</button>
+          <button id="logoutConfirmBtn" class="danger-btn" style="padding:10px 24px;border-radius:8px;max-width:unset;">Logout</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- UPGRADE MODAL                                -->
+    <!-- ============================================ -->
+    <div id="upgradeModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" id="modalClose">&times;</button>
+        <h2>Upgrade Cupid</h2>
+        <div class="pricing-grid">
+          <div class="pricing-card">
+            <h3>Free</h3>
+            <div class="price">$0</div>
+            <ul>
+              <li>Standard responses</li>
+              <li>Limited complex queries</li>
+            </ul>
+            <button class="current-plan" disabled>Current</button>
+          </div>
+          <div class="pricing-card featured">
+            <div class="popular-badge">Popular</div>
+            <h3>Plus</h3>
+            <div class="price">$1.99</div>
+            <div class="duration">24 hours</div>
+            <ul>
+              <li>Unlimited messages</li>
+              <li>Faster responses</li>
+              <li>Priority support</li>
+            </ul>
+            <button id="upgradePlusBtn">Get Plus</button>
+          </div>
+          <div class="pricing-card">
+            <h3>Pro</h3>
+            <div class="price">$15<small>/mo</small></div>
+            <div class="duration">First month 30% off</div>
+            <ul>
+              <li>Everything in Plus</li>
+              <li>Advanced AI model</li>
+              <li>Custom personas</li>
+            </ul>
+            <button id="upgradeProBtn">Go Pro</button>
+          </div>
+        </div>
+        <p class="modal-note">
+          Stripe integration coming soon
+        </p>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- DASHBOARD MODAL                              -->
+    <!-- ============================================ -->
+    <div id="dashboardModal" class="modal hidden">
+      <div class="modal-content">
+        <button class="modal-close" id="dashboardClose">&times;</button>
+        <h2>Dashboard</h2>
+        
+        <div class="dashboard-section">
+          <h3>Account</h3>
+          <p><strong>Name:</strong> <span id="dashName">-</span></p>
+          <p><strong>Email:</strong> <span id="dashEmail">-</span></p>
+          <p><strong>Plan:</strong> <span id="dashPlan">Free</span></p>
+          <p><strong>Messages:</strong> <span id="dashMessages">0</span></p>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Chat Color</h3>
+          <div class="color-picker-grid">
+            <button class="color-option active" data-color="#6c5ce7" style="background:#6c5ce7;"></button>
+            <button class="color-option" data-color="#00cec9" style="background:#00cec9;"></button>
+            <button class="color-option" data-color="#fdcb6e" style="background:#fdcb6e;"></button>
+            <button class="color-option" data-color="#e17055" style="background:#e17055;"></button>
+            <button class="color-option" data-color="#00b894" style="background:#00b894;"></button>
+            <button class="color-option" data-color="#fd79a8" style="background:#fd79a8;"></button>
+            <button class="color-option" data-color="#0984e3" style="background:#0984e3;"></button>
+            <button class="color-option" data-color="#6c5ce7" style="background:#6c5ce7;"></button>
+          </div>
+        </div>
+
+        <div class="dashboard-section">
+          <h3>Appearance</h3>
+          <button id="themeToggleBtn" class="theme-toggle-btn">
+            <i class="bx bx-sun"></i> Switch to Light Mode
+          </button>
+        </div>
+
+        <div class="dashboard-section">
+          <button id="dashboardUpgradeBtn" class="primary-btn">Upgrade Plan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- MOBILE SIDEBAR                               -->
+    <!-- ============================================ -->
+    <div id="mobileSidebarOverlay" class="mobile-sidebar-overlay hidden"></div>
+    <div id="mobileSidebar" class="mobile-sidebar hidden">
+      <div class="mobile-sidebar-header">
+        <span class="mobile-sidebar-logo">Cupid</span>
+        <button id="mobileSidebarClose" class="mobile-sidebar-close">
+          <i class="bx bx-x"></i>
+        </button>
+      </div>
+      <button id="mobileNewChatBtn" class="new-chat-btn">
+        <i class="bx bx-plus"></i> New chat
+      </button>
+      <div class="chat-history" id="mobileChatHistory">
+        <div class="chat-history-label">Recent</div>
+        <div class="history-item" style="opacity:0.5;cursor:default;">
+          <i class="bx bx-message"></i>
+          <span>No conversations yet</span>
+        </div>
+      </div>
+      <div class="sidebar-footer">
+        <div class="user-info">
+          <div class="user-avatar">U</div>
+          <div class="user-details">
+            <span class="user-name">Guest</span>
+            <span class="user-tier">Free</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
