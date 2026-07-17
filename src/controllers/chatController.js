@@ -7,9 +7,7 @@ import jwt from 'jsonwebtoken';
 import { 
   getLocationFromIP, 
   getLocalTime, 
-  getFormattedDate, 
-  getDayOfWeek 
-} from '../services/locationService.js';
+  getFormattedDate, getDayOfWeek } from '../services/locationService.js';
 
 const FREE_LIMIT = 5;
 const REGISTERED_FREE_LIMIT = 10;
@@ -73,6 +71,10 @@ export const sendMessage = async (req, res) => {
     let userName = null;
     let conversationHistory = [];
 
+    import { saveMemory, getAllMemories,} from "../services/memoryService.js";
+
+    let userMemories = [];
+
     const authHeader = req.headers.authorization;
     if (authHeader && authHeader.startsWith('Bearer ')) {
       try {
@@ -110,9 +112,22 @@ export const sendMessage = async (req, res) => {
 
     // ✅ Get conversation history for memory
     if (!isGuest && user) {
-      conversationHistory = await getConversationHistory(user._id, sessionIdToUse, 10);
-      console.log(`📚 Loaded ${conversationHistory.length} previous messages for memory`);
-    }
+  conversationHistory = await getConversationHistory(
+    user._id,
+    sessionIdToUse,
+    20
+  );
+
+  userMemories = await getAllMemories(user._id);
+
+  console.log(
+    `📚 Loaded ${conversationHistory.length} chat messages`
+  );
+
+  console.log(
+    `🧠 Loaded ${userMemories.length} memories`
+  );
+}
 
     // ---------- CHECK FOR IMAGE COMMANDS ----------
     const imageKeywords = ['draw', 'create', 'generate', 'imagine', 'make an image', 'picture of', 'photo of', 'illustrate', 'visualize', 'paint', 'sketch', 'render'];
@@ -231,8 +246,12 @@ export const sendMessage = async (req, res) => {
 User says: ${message}`;
 
     // ✅ Pass conversation history for memory
-    const aiResponse = await callGroqAI(enhancedMessage, userName || 'User', conversationHistory);
-    console.log('✅ Groq response received');
+    const aiResponse = await callGroqAI(
+    enhancedMessage,
+    userName || "User",
+    conversationHistory,
+    userMemories
+);
 
     // ---------- SAVE ASSISTANT RESPONSE ----------
     if (!isGuest && user) {
