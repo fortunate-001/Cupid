@@ -1,0 +1,646 @@
+/* =========================================
+   MESSAGE INPUT CONTAINER
+========================================= */
+
+.message-input-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 16px 18px;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   MAIN COMPOSER
+========================================= */
+
+.message-input {
+  position: relative;
+  width: min(768px, 100%);
+  min-height: 56px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  background: #181818;
+  border: 1px solid #303030;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-input:focus-within {
+  border-color: #444;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   TEXTAREA
+========================================= */
+
+.message-textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 24px;
+  max-height: 180px;
+  padding: 7px 2px;
+  margin: 0;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.message-textarea::-webkit-scrollbar {
+  width: 5px;
+}
+
+.message-textarea::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.message-textarea::-webkit-scrollbar-thumb {
+  background: #444;
+  border-radius: 10px;
+}
+
+.message-textarea::placeholder {
+  color: #858585;
+}
+
+/* =========================================
+   ICON BUTTONS
+========================================= */
+
+.input-icon {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #a5a5a5;
+  cursor: pointer;
+  font-size: 20px;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.input-icon:hover:not(:disabled) {
+  background: #292929;
+  color: #fff;
+}
+
+.input-icon:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.input-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* =========================================
+   ATTACHMENT WRAPPER
+========================================= */
+
+.attachment-wrapper {
+  position: relative;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   ATTACHMENT DROPDOWN
+========================================= */
+
+.attachment-menu {
+  position: absolute;
+  bottom: 48px;
+  left: 0;
+  width: 190px;
+  padding: 6px;
+  background: #202020;
+  border: 1px solid #383838;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  animation: attachmentMenuIn 0.15s ease;
+}
+
+@keyframes attachmentMenuIn {
+  from {
+    opacity: 0;
+    transform: translateY(5px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.attachment-menu button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 11px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #e5e5e5;
+  font-size: 14px;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.attachment-menu button:hover {
+  background: #303030;
+}
+
+.attachment-menu button:active {
+  background: #383838;
+}
+
+.attachment-menu svg {
+  width: 18px;
+  height: 18px;
+  color: #bcbcbc;
+  flex-shrink: 0;
+}
+
+/* =========================================
+   MICROPHONE BUTTON
+========================================= */
+
+.microphone-btn {
+  flex-shrink: 0;
+  position: relative;
+}
+
+.microphone-btn.recording {
+  background: #ff4d6d;
+  color: #fff;
+  animation: microphonePulse 1.2s infinite;
+}
+
+.microphone-btn.recording:hover {
+  background: #ff4d6d;
+  color: #fff;
+}
+
+@keyframes microphonePulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 109, 0.45);
+  }
+  70% {
+    box-shadow: 0 0 0 9px rgba(255, 77, 109, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 77, 109, 0);
+  }
+}
+
+/* =========================================
+   SEND BUTTON
+========================================= */
+
+.send-btn {
+  width: 38px;
+  height: 38px;
+  min-width: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 50%;
+  background: #3a3a3a;
+  color: #858585;
+  font-size: 20px;
+  cursor: default;
+  flex-shrink: 0;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.15s ease;
+}
+
+.send-btn.active {
+  background: #fff;
+  color: #111;
+  cursor: pointer;
+}
+
+.send-btn.active:hover {
+  background: #e5e5e5;
+  transform: scale(1.04);
+}
+
+.send-btn.active:active {
+  transform: scale(0.96);
+}
+
+.send-btn:disabled {
+  cursor: default;
+}
+
+/* =========================================
+   SELECTED IMAGE PREVIEW
+========================================= */
+
+.selected-image-preview {
+  width: min(768px, 100%);
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  background: #121212;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
+}
+
+.selected-image-box {
+  position: relative;
+  display: inline-block;
+  max-width: 120px;
+}
+
+.selected-image-box img {
+  width: 100%;
+  height: auto;
+  max-height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.remove-image-btn:hover {
+  transform: scale(1.1);
+}
+
+/* =========================================
+   MESSAGE ACTIONS
+========================================= */
+
+.message-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.icon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.icon-btn.speaking {
+  color: #4ade80;
+}
+
+.icon-btn.speaking:hover {
+  background: rgba(74, 222, 128, 0.1);
+}
+
+/* =========================================
+   SPEECH LOADER
+========================================= */
+
+.speech-loader {
+  animation: speechSpin 1s linear infinite;
+}
+
+@keyframes speechSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+  .message-input-container {
+    padding: 8px 10px 12px;
+  }
+
+  .message-input {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 17px;
+    padding: 7px 8px;
+  }
+
+  .input-icon,
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .message-textarea {
+    font-size: 15px;
+    line-height: 22px;
+    max-height: 150px;
+  }
+
+  .attachment-menu {
+    width: 175px;
+  }
+
+  .selected-image-box {
+    max-width: 80px;
+  }
+
+  .selected-image-box img {
+    max-height: 80px;
+  }
+}
+
+/* =========================================
+   DARK MODE SUPPORT (Optional)
+========================================= */
+
+@media (prefers-color-scheme: light) {
+  .message-input {
+    background: #f5f5f5;
+    border-color: #d0d0d0;
+  }
+
+  .message-input:focus-within {
+    border-color: #aaa;
+  }
+
+  .message-textarea {
+    color: #111;
+  }
+
+  .message-textarea::placeholder {
+    color: #888;
+  }
+
+  .input-icon {
+    color: #777;
+  }
+
+  .input-icon:hover:not(:disabled) {
+    background: #e5e5e5;
+    color: #111;
+  }
+
+  .attachment-menu {
+    background: #f0f0f0;
+    border-color: #d0d0d0;
+  }
+
+  .attachment-menu button {
+    color: #222;
+  }
+
+  .attachment-menu button:hover {
+    background: #e0e0e0;
+  }
+
+  .send-btn {
+    background: #d0d0d0;
+    color: #888;
+  }
+
+  .send-btn.active {
+    background: #111;
+    color: #fff;
+  }
+
+  .send-btn.active:hover {
+    background: #333;
+  }
+
+  .selected-image-preview {
+    background: #e8e8e8;
+    border-color: #ccc;
+  }
+
+  .selected-image-box img {
+    border-color: #ccc;
+  }
+}
+
+
+/* =========================================
+   MESSAGE INPUT WRAPPER
+========================================= */
+
+.message-input-wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 16px 18px;
+  box-sizing: border-box;
+}
+
+/* =========================================
+   IMAGE PREVIEW INSIDE INPUT
+========================================= */
+
+.image-preview-inline {
+  width: min(768px, 100%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  background: #121212;
+  border-radius: 12px;
+  border: 1px solid #2a2a2a;
+}
+
+.image-preview-thumb {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.image-preview-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #2a2a2a;
+}
+
+.image-preview-thumb .remove-image-btn {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  background: #ff4d6d;
+  color: #fff;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease;
+}
+
+.image-preview-thumb .remove-image-btn:hover {
+  transform: scale(1.1);
+}
+
+.image-preview-text {
+  flex: 1;
+  color: #858585;
+  font-size: 14px;
+}
+
+.image-preview-text span {
+  display: block;
+}
+
+/* =========================================
+   MAIN COMPOSER
+========================================= */
+
+.message-input {
+  position: relative;
+  width: min(768px, 100%);
+  min-height: 56px;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  background: #181818;
+  border: 1px solid #303030;
+  border-radius: 18px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.message-input:focus-within {
+  border-color: #444;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.3);
+}
+
+/* =========================================
+   TEXTAREA
+========================================= */
+
+.message-textarea {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 24px;
+  max-height: 180px;
+  padding: 7px 2px;
+  margin: 0;
+  resize: none;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: #fff;
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 24px;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+.message-textarea::placeholder {
+  color: #858585;
+}
+
+/* =========================================
+   MOBILE RESPONSIVE
+========================================= */
+
+@media (max-width: 600px) {
+  .message-input-wrapper {
+    padding: 8px 10px 12px;
+  }
+
+  .message-input {
+    width: 100%;
+    min-height: 52px;
+    border-radius: 17px;
+    padding: 7px 8px;
+  }
+
+  .input-icon,
+  .send-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+  }
+
+  .message-textarea {
+    font-size: 14px;
+    line-height: 22px;
+    max-height: 150px;
+  }
+
+  .image-preview-inline {
+    padding: 6px 10px;
+  }
+
+  .image-preview-thumb {
+    width: 36px;
+    height: 36px;
+  }
+
+  .image-preview-text {
+    font-size: 12px;
+  }
+}
