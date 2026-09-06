@@ -1,9 +1,7 @@
 import express from "express";
-
 import jwt from "jsonwebtoken";
 
 import passport from "../config/passport.js";
-
 
 import {
 
@@ -124,11 +122,28 @@ router.get(
 
   ) => {
 
-
     try {
 
       const user =
         req.user;
+
+
+      if (!user) {
+
+        return res.redirect(
+
+          `${process.env.FRONTEND_URL}/?google=failed`
+
+        );
+
+      }
+
+
+      user.lastLogin =
+        new Date();
+
+
+      await user.save();
 
 
       const token =
@@ -156,7 +171,7 @@ router.get(
 
 
       // ======================================
-      // REDIRECT BACK TO REACT
+      // REDIRECT TO FRONTEND
       // ======================================
 
       const redirectURL =
@@ -177,16 +192,11 @@ router.get(
       );
 
 
-    } catch (
-      error
-    ) {
+    } catch (error) {
 
       console.error(
-
         "❌ Google callback error:",
-
         error
-
       );
 
 
@@ -205,5 +215,4 @@ router.get(
 );
 
 
-export default
-  router;
+export default router;

@@ -354,6 +354,81 @@ export function AuthProvider({
     </AuthContext.Provider>
   );
 
+  // =========================================
+// GOOGLE LOGIN
+// =========================================
+
+const loginWithGoogle =
+  async (token) => {
+
+    try {
+
+      localStorage.removeItem(
+        "guest_mode"
+      );
+
+
+      localStorage.setItem(
+        "token",
+        token
+      );
+
+
+      const data =
+        await authService.getCurrentUser();
+
+
+      if (!data?.user) {
+
+        throw new Error(
+          "Unable to get Google user information."
+        );
+
+      }
+
+
+      localStorage.setItem(
+
+        "user",
+
+        JSON.stringify(
+          data.user
+        )
+
+      );
+
+
+      setUser(
+        data.user
+      );
+
+
+      setIsGuest(
+        false
+      );
+
+
+      return data;
+
+
+    } catch (error) {
+
+      localStorage.removeItem(
+        "token"
+      );
+
+
+      localStorage.removeItem(
+        "user"
+      );
+
+
+      throw error;
+
+    }
+
+  };
+
 }
 
 

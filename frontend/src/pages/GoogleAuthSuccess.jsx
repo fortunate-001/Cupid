@@ -8,12 +8,11 @@ import {
 } from "react-router-dom";
 
 import {
-  toast,
-} from "react-hot-toast";
+  useAuth,
+} from "../context/AuthContext";
 
 
-export default function GoogleAuthSuccess() {
-
+function GoogleAuthSuccess() {
 
   const navigate =
     useNavigate();
@@ -25,8 +24,13 @@ export default function GoogleAuthSuccess() {
     useSearchParams();
 
 
-  useEffect(() => {
+  const {
+    loginWithGoogle,
+  } =
+    useAuth();
 
+
+  useEffect(() => {
 
     const token =
       searchParams.get(
@@ -36,54 +40,66 @@ export default function GoogleAuthSuccess() {
 
     if (!token) {
 
-      toast.error(
-        "Google authentication failed."
-      );
-
-
       navigate(
-        "/",
+        "/?google=failed",
         {
           replace: true,
         }
       );
-
 
       return;
 
     }
 
 
-    localStorage.setItem(
-      "token",
-      token
-    );
+    const authenticate =
+      async () => {
+
+        try {
+
+          await loginWithGoogle(
+            token
+          );
 
 
-    // Remove guest mode
-    localStorage.removeItem(
-      "guest_mode"
-    );
+          navigate(
+            "/chat",
+            {
+              replace: true,
+            }
+          );
 
 
-    toast.success(
-      "Successfully logged in with Google!"
-    );
+        } catch (error) {
+
+          console.error(
+            "Google login error:",
+            error
+          );
 
 
-    navigate(
-      "/chat",
-      {
-        replace: true,
-      }
-    );
+          navigate(
+            "/?google=failed",
+            {
+              replace: true,
+            }
+          );
+
+        }
+
+      };
+
+
+    authenticate();
 
 
   }, [
 
-    navigate,
-
     searchParams,
+
+    loginWithGoogle,
+
+    navigate,
 
   ]);
 
@@ -91,9 +107,7 @@ export default function GoogleAuthSuccess() {
   return (
 
     <div
-
       style={{
-
         minHeight:
           "100vh",
 
@@ -105,15 +119,19 @@ export default function GoogleAuthSuccess() {
 
         justifyContent:
           "center",
-
       }}
-
     >
 
-      Signing you in with Google...
+      <p>
+        Signing you in with Google...
+      </p>
 
     </div>
 
   );
 
 }
+
+
+export default
+  GoogleAuthSuccess;
