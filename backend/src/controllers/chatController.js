@@ -12,7 +12,7 @@ import {
 
 import jwt from "jsonwebtoken";
 
-import Conversation from "../Models/Conversation.js";
+import Conversation from "../models/Conversation.js";
 
 import {
   getLocationFromIP,
