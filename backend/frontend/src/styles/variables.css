@@ -1,0 +1,59 @@
+:root{
+
+    /* Accent (changes when user picks a color) */
+
+    --accent:#10a37f;
+
+    --accent-hover:#0e8f70;
+
+    /* Radius */
+
+    --radius:16px;
+
+    --transition:.25s;
+
+}
+
+/* ===========================
+   DARK THEME (Default)
+=========================== */
+
+[data-theme="dark"]{
+
+    --bg:#0f0f0f;
+
+    --sidebar:#171717;
+
+    --card:#202123;
+
+    --border:#2d2d2d;
+
+    --text:#ffffff;
+
+    --text-secondary:#9ca3af;
+
+    --danger:#ef4444;
+
+}
+
+/* ===========================
+   LIGHT THEME
+=========================== */
+
+[data-theme="light"]{
+
+    --bg:#f5f5f5;
+
+    --sidebar:#ffffff;
+
+    --card:#ffffff;
+
+    --border:#e5e5e5;
+
+    --text:#111827;
+
+    --text-secondary:#6b7280;
+
+    --danger:#dc2626;
+
+}

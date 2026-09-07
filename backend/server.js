@@ -33,15 +33,43 @@ const PORT = process.env.PORT || 5001;
 // MIDDLEWARE
 // ============================================
 
+const allowedOrigins = [
+  "https://cupid-ew8y.vercel.app",
+  "https://cupid.vercel.app",
+  "http://localhost:5173",
+];
+
+if (process.env.FRONTEND_URL) {
+  allowedOrigins.push(process.env.FRONTEND_URL);
+}
+
 app.use(
   cors({
-    origin: [
-      process.env.FRONTEND_URL || "http://localhost:5173",
-      "https://cupid.vercel.app",
-    ],
+    origin: function (origin, callback) {
+      // Allow requests with no origin
+      // (Postman, server-to-server requests, etc.)
+      if (!origin) {
+        return callback(null, true);
+      }
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      console.log("CORS blocked origin:", origin);
+      return callback(new Error("Not allowed by CORS"));
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: [
+      "Content-Type",
+      "Authorization",
+    ],
   })
 );
+
+// Explicitly handle CORS preflight requests
+app.options("*", cors());
 
 app.use(express.json());
 
@@ -61,106 +89,88 @@ app.use(passport.initialize());
 // API ROUTES
 // ============================================
 
-app.use(
-  "/api/auth",
-  authRoutes
-);
+app.use("/api/auth", authRoutes);
 
-app.use(
-  "/api/chat",
-  chatRoutes
-);
+app.use("/api/chat", chatRoutes);
 
-app.use(
-  "/api/voice",
-  voiceRoutes
-);
+app.use("/api/voice", voiceRoutes);
 
-app.use(
-  "/api/image",
-  imageRoutes
-);
+app.use("/api/image", imageRoutes);
 
-app.use(
-  "/api/subscription",
-  subscriptionRoutes
-);
+app.use("/api/subscription", subscriptionRoutes);
 
-app.use(
-  "/api/settings",
-  settingsRoutes
-);
+app.use("/api/settings", settingsRoutes);
 
-app.use(
-  "/api/files",
-  fileRoutes
-);
+app.use("/api/files", fileRoutes);
 
 // ============================================
 // LOCATION
 // ============================================
 
-app.get(
-  "/api/location",
-  async (req, res) => {
-    try {
-      const ip =
-        req.headers["x-forwarded-for"]
-          ?.split(",")[0] ||
-        req.socket.remoteAddress ||
-        "unknown";
+app.get("/api/location", async (req, res) => {
+  try {
+    const forwardedFor = req.headers["x-forwarded-for"];
 
-      const response = await fetch(
-        `http://ip-api.com/json/${ip}?fields=status,city,regionName,country,timezone`
-      );
+    const ip =
+      forwardedFor?.split(",")[0]?.trim() ||
+      req.socket.remoteAddress ||
+      "unknown";
 
-      const data = await response.json();
+    // Render/proxy environments can provide local/private IPs.
+    // In that case, let ip-api determine the location from the
+    // public request instead of sending a private IP.
+    const url =
+      ip &&
+      ip !== "unknown" &&
+      !ip.startsWith("10.") &&
+      !ip.startsWith("192.168.") &&
+      !ip.startsWith("127.") &&
+      !ip.startsWith("::1")
+        ? `http://ip-api.com/json/${ip}?fields=status,city,regionName,country,timezone`
+        : "http://ip-api.com/json/?fields=status,city,regionName,country,timezone";
 
-      if (data.status === "success") {
-        return res.json({
-          city: data.city || "Unknown",
-          region: data.regionName || "Unknown",
-          country: data.country || "Unknown",
-          timezone: data.timezone || "UTC",
-        });
-      }
+    const response = await fetch(url);
 
+    const data = await response.json();
+
+    if (data.status === "success") {
       return res.json({
-        city: "Unknown",
-        region: "Unknown",
-        country: "Unknown",
-        timezone: "UTC",
-      });
-    } catch (error) {
-      console.error(
-        "Location error:",
-        error
-      );
-
-      return res.json({
-        city: "Unknown",
-        region: "Unknown",
-        country: "Unknown",
-        timezone: "UTC",
+        city: data.city || "Unknown",
+        region: data.regionName || "Unknown",
+        country: data.country || "Unknown",
+        timezone: data.timezone || "UTC",
       });
     }
+
+    return res.json({
+      city: "Unknown",
+      region: "Unknown",
+      country: "Unknown",
+      timezone: "UTC",
+    });
+  } catch (error) {
+    console.error("Location error:", error);
+
+    return res.json({
+      city: "Unknown",
+      region: "Unknown",
+      country: "Unknown",
+      timezone: "UTC",
+    });
   }
-);
+});
 
 // ============================================
 // HEALTH CHECK
 // ============================================
 
-app.get(
-  "/api/health",
-  (req, res) => {
-    res.json({
-      status: "ok",
-      message: "Cupid is running!",
-      timestamp: new Date().toISOString(),
-    });
-  }
-);
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Cupid is running!",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // ============================================
 // UPLOADS
@@ -169,10 +179,7 @@ app.get(
 app.use(
   "/uploads",
   express.static(
-    path.join(
-      process.cwd(),
-      "uploads"
-    )
+    path.join(process.cwd(), "uploads")
   )
 );
 
@@ -181,14 +188,11 @@ app.use(
 // IMPORTANT: THIS MUST COME AFTER ALL ROUTES
 // ============================================
 
-app.use(
-  "/api",
-  (req, res) => {
-    res.status(404).json({
-      error: "API endpoint not found",
-    });
-  }
-);
+app.use("/api", (req, res) => {
+  res.status(404).json({
+    error: "API endpoint not found",
+  });
+});
 
 // ============================================
 // ERROR HANDLER
@@ -202,22 +206,10 @@ app.use(errorHandler);
 
 connectDB()
   .then(() => {
-    app.listen(
-      PORT,
-      () => {
-        console.log(
-          `Cupid is listening on port ${PORT}`
-        );
-
-        console.log(
-          `http://localhost:${PORT}`
-        );
-
-        console.log(
-          `Health check: http://localhost:${PORT}/api/health`
-        );
-      }
-    );
+    app.listen(PORT, () => {
+      console.log(`Cupid is listening on port ${PORT}`);
+      console.log(`Health check: /api/health`);
+    });
   })
   .catch((error) => {
     console.error(
