@@ -34,9 +34,7 @@ const PORT = process.env.PORT || 5001;
 // ============================================
 
 const allowedOrigins = [
-  "https://cupid-ew8y.vercel.app",
-  "https://cupid.vercel.app",
-  "http://localhost:5173",
+  "https://cupid-ew8y.vercel.app"
 ];
 
 if (process.env.FRONTEND_URL) {
