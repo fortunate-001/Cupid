@@ -16,9 +16,7 @@ import fileRoutes from "./src/routes/fileRoutes.js";
 
 import passport from "./src/config/passport.js";
 
-import {
-  errorHandler,
-} from "./src/middleware/errorHandler.js";
+import { errorHandler } from "./src/middleware/errorHandler.js";
 
 dotenv.config();
 
@@ -27,53 +25,97 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
+// Render provides PORT in production.
+// Local development uses 5001.
 const PORT = process.env.PORT || 5001;
 
 // ============================================
-// MIDDLEWARE
+// CORS
 // ============================================
 
 const allowedOrigins = [
-  "https://cupid-ew8y.vercel.app"
+  "http://localhost:5173",
+  "http://localhost:3000",
+  "https://cupid-ew8y.vercel.app",
 ];
 
+// Add FRONTEND_URL from environment if provided
 if (process.env.FRONTEND_URL) {
-  allowedOrigins.push(process.env.FRONTEND_URL);
+  const frontendUrl = process.env.FRONTEND_URL.replace(/\/$/, "");
+
+  if (!allowedOrigins.includes(frontendUrl)) {
+    allowedOrigins.push(frontendUrl);
+  }
 }
 
+console.log("Allowed CORS origins:", allowedOrigins);
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow requests without an Origin header.
+    // Useful for Postman, curl, server-to-server requests, etc.
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // Allow localhost during development.
+    if (
+      origin.startsWith("http://localhost:") ||
+      origin.startsWith("http://127.0.0.1:")
+    ) {
+      return callback(null, true);
+    }
+
+    // Allow known production origins.
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    console.warn(`[CORS] Blocked origin: ${origin}`);
+
+    return callback(
+      new Error(`Origin ${origin} is not allowed by CORS`)
+    );
+  },
+
+  credentials: true,
+
+  methods: [
+    "GET",
+    "POST",
+    "PUT",
+    "PATCH",
+    "DELETE",
+    "OPTIONS",
+  ],
+
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+  ],
+
+  optionsSuccessStatus: 200,
+
+  maxAge: 86400,
+};
+
+app.use(cors(corsOptions));
+
+// ============================================
+// BODY PARSING
+// ============================================
+
 app.use(
-  cors({
-    origin: function (origin, callback) {
-      // Allow requests with no origin
-      // (Postman, server-to-server requests, etc.)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
-
-      console.log("CORS blocked origin:", origin);
-      return callback(new Error("Not allowed by CORS"));
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: [
-      "Content-Type",
-      "Authorization",
-    ],
+  express.json({
+    limit: "50mb",
   })
 );
-
-// Explicitly handle CORS preflight requests
-app.options("*", cors());
-
-app.use(express.json());
 
 app.use(
   express.urlencoded({
     extended: true,
+    limit: "50mb",
   })
 );
 
@@ -106,28 +148,54 @@ app.use("/api/files", fileRoutes);
 // ============================================
 
 app.get("/api/location", async (req, res) => {
+  const fallbackLocation = {
+    city: "Unknown",
+    region: "Unknown",
+    country: "Unknown",
+    timezone: "UTC",
+  };
+
   try {
     const forwardedFor = req.headers["x-forwarded-for"];
 
     const ip =
       forwardedFor?.split(",")[0]?.trim() ||
       req.socket.remoteAddress ||
-      "unknown";
+      "";
 
-    // Render/proxy environments can provide local/private IPs.
-    // In that case, let ip-api determine the location from the
-    // public request instead of sending a private IP.
-    const url =
-      ip &&
-      ip !== "unknown" &&
-      !ip.startsWith("10.") &&
-      !ip.startsWith("192.168.") &&
-      !ip.startsWith("127.") &&
-      !ip.startsWith("::1")
-        ? `http://ip-api.com/json/${ip}?fields=status,city,regionName,country,timezone`
-        : "http://ip-api.com/json/?fields=status,city,regionName,country,timezone";
+    const isPrivateIp =
+      !ip ||
+      ip === "unknown" ||
+      ip === "::1" ||
+      ip.startsWith("127.") ||
+      ip.startsWith("10.") ||
+      ip.startsWith("192.168.") ||
+      ip.startsWith("172.") ||
+      ip.startsWith("::ffff:127.");
 
-    const response = await fetch(url);
+    let locationUrl;
+
+    if (isPrivateIp) {
+      locationUrl =
+        "http://ip-api.com/json/?fields=status,city,regionName,country,timezone";
+    } else {
+      locationUrl =
+        `http://ip-api.com/json/${encodeURIComponent(
+          ip
+        )}?fields=status,city,regionName,country,timezone`;
+    }
+
+    const response = await fetch(locationUrl);
+
+    if (!response.ok) {
+      console.error(
+        "Location API HTTP error:",
+        response.status,
+        response.statusText
+      );
+
+      return res.json(fallbackLocation);
+    }
 
     const data = await response.json();
 
@@ -140,21 +208,11 @@ app.get("/api/location", async (req, res) => {
       });
     }
 
-    return res.json({
-      city: "Unknown",
-      region: "Unknown",
-      country: "Unknown",
-      timezone: "UTC",
-    });
+    return res.json(fallbackLocation);
   } catch (error) {
     console.error("Location error:", error);
 
-    return res.json({
-      city: "Unknown",
-      region: "Unknown",
-      country: "Unknown",
-      timezone: "UTC",
-    });
+    return res.json(fallbackLocation);
   }
 });
 
@@ -182,13 +240,16 @@ app.use(
 );
 
 // ============================================
-// 404 API HANDLER
-// IMPORTANT: THIS MUST COME AFTER ALL ROUTES
+// API 404 HANDLER
+// IMPORTANT:
+// THIS MUST COME AFTER ALL API ROUTES
 // ============================================
 
 app.use("/api", (req, res) => {
   res.status(404).json({
     error: "API endpoint not found",
+    path: req.originalUrl,
+    method: req.method,
   });
 });
 
@@ -205,8 +266,18 @@ app.use(errorHandler);
 connectDB()
   .then(() => {
     app.listen(PORT, () => {
-      console.log(`Cupid is listening on port ${PORT}`);
-      console.log(`Health check: /api/health`);
+      console.log(
+        `Cupid is listening on port ${PORT}`
+      );
+
+      console.log(
+        `Health check: http://localhost:${PORT}/api/health`
+      );
+
+      console.log(
+        "CORS enabled for origins:",
+        allowedOrigins
+      );
     });
   })
   .catch((error) => {
