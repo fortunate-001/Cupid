@@ -52,13 +52,10 @@ console.log("Allowed CORS origins:", allowedOrigins);
 
 const corsOptions = {
   origin(origin, callback) {
-    // Allow requests without an Origin header.
-    // Useful for Postman, curl, server-to-server requests, etc.
     if (!origin) {
       return callback(null, true);
     }
 
-    // Allow localhost during development.
     if (
       origin.startsWith("http://localhost:") ||
       origin.startsWith("http://127.0.0.1:")
@@ -66,8 +63,13 @@ const corsOptions = {
       return callback(null, true);
     }
 
-    // Allow known production origins.
     if (allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow any Vercel preview deployment for this project
+    const vercelPreviewPattern = /^https:\/\/cupid-ew8y-.*-fortunate-001s-projects\.vercel\.app$/;
+    if (vercelPreviewPattern.test(origin)) {
       return callback(null, true);
     }
 
@@ -287,4 +289,4 @@ connectDB()
     );
 
     process.exit(1);
-  });
+  });x
