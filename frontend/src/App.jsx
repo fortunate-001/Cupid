@@ -1,247 +1,97 @@
 import React from "react";
 
-import {
+import { Routes, Route, Navigate } from "react-router-dom";
 
-  Routes,
+import AuthModal from "./components/auth/AuthModal";
 
-  Route,
+import Login from "./pages/Login";
 
-  Navigate,
+import Signup from "./pages/Register";
 
-} from "react-router-dom";
+import ForgotPassword from "./pages/ForgotPassword";
 
+import ResetPassword from "./pages/ResetPassword";
 
-import AuthModal
-  from "./components/auth/AuthModal";
+import Chat from "./pages/Chat";
 
-import Login
-  from "./pages/Login";
+import Settings from "./pages/settings";
 
-import Signup
-  from "./pages/Register";
+import { useAuth } from "./context/AuthContext";
 
-import ForgotPassword
-  from "./pages/ForgotPassword";
+import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
 
-import ResetPassword
-  from "./pages/ResetPassword";
-
-import Chat
-  from "./pages/Chat";
-
-import Settings
-  from "./pages/settings";
-
-import {
-  useAuth,
-} from "./context/AuthContext";
-
-import GoogleAuthSuccess from "./pages/GoogleAuthSuccess"
-
-
-
-function PrivateRoute({
-  children,
-}) {
-
-
+function PrivateRoute({ children }) {
   const {
-
     user,
 
     isGuest,
 
     loading,
+  } = useAuth();
 
-  } =
-    useAuth();
-
-
-  if (
-    loading
-  ) {
-
+  if (loading) {
     return null;
-
   }
 
+  const authenticated = user || isGuest;
 
-  const authenticated =
-    user || isGuest;
-
-
-  return authenticated
-
-    ? children
-
-    : (
-
-      <Navigate
-        to="/"
-        replace
-      />
-
-    );
-
+  return authenticated ? children : <Navigate to="/" replace />;
 }
 
-
-
 function AppRoutes() {
-
-
-  const {
-    continueAsGuest,
-  } =
-    useAuth();
-
+  const { continueAsGuest } = useAuth();
 
   return (
-
     <Routes>
-
-
       {/* AUTH MODAL */}
 
-      <Route
-
-        path="/"
-
-        element={
-
-          <AuthModal
-            onGuest={
-              continueAsGuest
-            }
-          />
-
-        }
-
-      />
-
+      <Route path="/" element={<AuthModal onGuest={continueAsGuest} />} />
 
       {/* LOGIN */}
 
-      <Route
-
-        path="/login"
-
-        element={
-          <Login />
-        }
-
-      />
-
+      <Route path="/login" element={<Login />} />
 
       {/* SIGNUP */}
 
-      <Route
-
-        path="/signup"
-
-        element={
-          <Signup />
-        }
-
-      />
-
+      <Route path="/signup" element={<Signup />} />
 
       {/* FORGOT PASSWORD */}
 
-      <Route
-
-        path="/forgot-password"
-
-        element={
-          <ForgotPassword />
-        }
-
-      />
-
+      <Route path="/forgot-password" element={<ForgotPassword />} />
 
       {/* RESET PASSWORD */}
 
-      <Route
-
-        path="/reset-password"
-
-        element={
-          <ResetPassword />
-        }
-
-      />
-
+      <Route path="/reset-password" element={<ResetPassword />} />
 
       {/* CHAT */}
 
       <Route
-
         path="/chat"
-
         element={
-
           <PrivateRoute>
-
             <Chat />
-
           </PrivateRoute>
-
         }
-
       />
-
 
       {/* SETTINGS */}
 
       <Route
-
         path="/settings"
-
         element={
-
           <PrivateRoute>
-
             <Settings />
-
           </PrivateRoute>
-
         }
-
       />
-
 
       {/* FALLBACK */}
 
-      <Route
-
-        path="*"
-
-        element={
-
-          <Navigate
-            to="/"
-            replace
-          />
-
-        }
-
-      />
-
-
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-
   );
-
 }
 
-
-
 export default function App() {
-
-  return (
-
-    <AppRoutes />
-
-  );
-
+  return <AppRoutes />;
 }

@@ -1,233 +1,157 @@
-/* =========================================
+/* =========================================================
    CHAT PAGE
-========================================= */
-
+========================================================= */
 .chat-page {
-  width: 100vw;
-  height: 100vh;
-
+  width: 100%;
+  height: 100dvh;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
-
-  background: #0b0b0b;
 }
 
+@supports not (height: 100dvh) {
+  .chat-page,
+  .chat-background,
+  .chat-main { height: 100vh; }
+}
 
-/* =========================================
-   CHAT BACKGROUND
-========================================= */
-
+/* =========================================================
+   LAYOUT (sidebar + main)
+========================================================= */
 .chat-background {
   width: 100%;
   height: 100%;
-
-  display: flex;
-
-  overflow: hidden;
-
-  background: #0b0b0b;
-}
-
-
-/* =========================================
-   CHAT MAIN
-========================================= */
-
-.chat-main {
-  flex: 1;
-
   min-width: 0;
   min-height: 0;
-
-  height: 100vh;
-
   display: flex;
-  flex-direction: column;
-
   overflow: hidden;
-
-  background: #0b0b0b;
+  background: var(--bg);
 }
-
-
-/* =========================================
-   MESSAGES
-========================================= */
-
-.messages {
-  flex: 1;
-
-  min-height: 0;
-
-  width: 100%;
-
-  overflow-y: auto;
-
-  display: flex;
-  flex-direction: column;
-
-  padding: 20px;
-
-  box-sizing: border-box;
-}
-
-
-/* =========================================
-   WELCOME
-========================================= */
-
-.welcome {
-  flex: 1;
-
-  width: 100%;
-
-  display: flex;
-  flex-direction: column;
-
-  justify-content: center;
-  align-items: center;
-
-  text-align: center;
-}
-
-/* =========================================
-   CHAT PAGE
-========================================= */
-
-.chat-page {
-  width: 100%;
-  height: 100vh;
-
-  min-width: 0;
-  min-height: 0;
-
-  overflow: hidden;
-}
-
-
-/* =========================================
-   MAIN APPLICATION LAYOUT
-========================================= */
-
-.chat-background {
-  width: 100%;
-  height: 100%;
-
-  min-width: 0;
-  min-height: 0;
-
-  display: flex;
-
-  overflow: hidden;
-
-  background: #111111;
-}
-
-
-/* =========================================
-   AUTH BACKGROUND
-========================================= */
 
 .chat-background.blurred {
-  filter: blur(4px);
+  filter: blur(6px) saturate(120%);
   pointer-events: none;
   user-select: none;
 }
 
-
-/* =========================================
-   CHAT MAIN
-========================================= */
-
+/* =========================================================
+   MAIN COLUMN
+========================================================= */
 .chat-main {
   flex: 1;
-
   width: 0;
-
   min-width: 0;
   min-height: 0;
-
   height: 100%;
-
   display: flex;
   flex-direction: column;
-
   overflow: hidden;
-
   position: relative;
-
-  background: #111111;
+  background: var(--bg);
 }
 
-
-/* =========================================
-   MESSAGES AREA
-========================================= */
-
+/* =========================================================
+   MESSAGES
+========================================================= */
 .messages {
   flex: 1;
-
   width: 100%;
-
   min-width: 0;
   min-height: 0;
-
   overflow-y: auto;
   overflow-x: hidden;
-
+  -webkit-overflow-scrolling: touch;
   display: flex;
   flex-direction: column;
-
-  padding:
-    20px
-    clamp(16px, 6vw, 120px)
-    24px;
-
+  padding: 20px clamp(16px, 6vw, 120px) 24px;
   scroll-behavior: smooth;
-
   scrollbar-width: thin;
 }
 
-
-/* =========================================
+/* =========================================================
    WELCOME
-========================================= */
-
+========================================================= */
 .welcome {
   flex: 1;
-
   width: 100%;
-
   min-height: 0;
-
   display: flex;
   flex-direction: column;
-
   align-items: center;
   justify-content: center;
-
   padding-bottom: 10vh;
-
   text-align: center;
 }
 
-
 .welcome h1 {
   margin: 0 0 12px;
-
-  color: #ffffff;
-
-  font-size:
-    clamp(28px, 4vw, 56px);
-
+  color: var(--text);
+  font-size: clamp(28px, 4vw, 56px);
   font-weight: 600;
-
   letter-spacing: -0.04em;
 }
 
-
 .welcome p {
-  color: #969696;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: clamp(14px, 1.5vw, 18px);
+}
 
-  font-size:
-    clamp(14px, 1.5vw, 18px);
+/* =========================================================
+   COMPOSER SAFE-AREA
+========================================================= */
+.chat-main > .message-input,
+.chat-main > .message-input-wrap,
+.chat-main > .composer,
+.chat-main > .input-bar {
+  flex-shrink: 0;
+  padding-bottom: calc(12px + env(safe-area-inset-bottom));
+}
+
+.chat-main input,
+.chat-main textarea {
+  font-size: 16px;   /* stop iOS auto-zoom */
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+@media (max-width: 768px) {
+  .messages {
+    padding: 14px 12px 10px;
+  }
+
+  .welcome {
+    padding-bottom: 6vh;
+  }
+
+  .welcome h1 {
+    font-size: clamp(22px, 7vw, 30px);
+  }
+
+  .welcome p {
+    font-size: 14px;
+  }
+
+  .chat-main > .message-input,
+  .chat-main > .message-input-wrap,
+  .chat-main > .composer,
+  .chat-main > .input-bar {
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (max-width: 420px) {
+  .messages { padding: 12px 10px 8px; }
+  .welcome h1 { font-size: 22px; }
+}
+
+/* =========================================================
+   LARGE SCREENS
+========================================================= */
+@media (min-width: 1400px) {
+  .messages {
+    padding-left: clamp(80px, 18vw, 260px);
+    padding-right: clamp(80px, 18vw, 260px);
+  }
 }
