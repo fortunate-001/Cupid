@@ -1,27 +1,57 @@
-:root{
+/* =========================================================
+   THEME VARIABLES
+   Applied via data-theme="dark" / data-theme="light"
+   set on <html> by ThemeContext.jsx
+========================================================= */
 
-    --accent:#10b981;
+/* Default (dark) — also used as fallback before JS runs */
+:root,
+[data-theme="dark"] {
+  --bg: #0b0b0b;
+  --card: #171717;
+  --bg-tertiary: #1e1e1e;
+  --sidebar: #171717;
 
-    --bg:#111111;
-    --bg2:#181818;
-    --bg3:#232323;
+  --text: #ffffff;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
 
-    --text:#fff;
-    --text2:#9ca3af;
+  --border: #2b2b2b;
+  --border-color: #2b2b2b;
 
-    --border:#2f2f2f;
-
+  --primary: #6c5ce7;
+  --accent-color: #6c5ce7;
+  --accent-hover: #7d6ef0;
 }
 
-body.light{
+[data-theme="light"] {
+  --bg: #ffffff;
+  --card: #f7f7f8;
+  --bg-tertiary: #eeeeef;
+  --sidebar: #f2f2f3;
 
-    --bg:#ffffff;
-    --bg2:#f8f8f8;
-    --bg3:#eeeeee;
+  --text: #16161a;
+  --text-primary: #16161a;
+  --text-secondary: #63636b;
 
-    --text:#101010;
-    --text2:#666;
+  --border: #e2e2e4;
+  --border-color: #e2e2e4;
 
-    --border:#d9d9d9;
+  --primary: #6c5ce7;
+  --accent-color: #6c5ce7;
+  --accent-hover: #5b4bd6;
+}
 
+/* =========================================================
+   BASE APPLICATION
+========================================================= */
+
+html,
+body {
+  background: var(--bg);
+  color: var(--text);
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }

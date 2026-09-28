@@ -29,6 +29,7 @@ export default function Sidebar({ onOpenSettings }) {
   const navigate = useNavigate();
 
   const [collapsed, setCollapsed] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [activePanel, setActivePanel] = useState(null);
   const [search, setSearch] = useState("");
   const [openMenu, setOpenMenu] = useState(null);
@@ -53,6 +54,22 @@ export default function Sidebar({ onOpenSettings }) {
   useEffect(() => {
     loadConversations();
   }, []);
+
+  // =========================================
+  // LOCK BODY SCROLL WHEN MOBILE DRAWER OPEN
+  // =========================================
+
+  useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
 
   // =========================================
   // SEARCH
@@ -80,6 +97,20 @@ export default function Sidebar({ onOpenSettings }) {
   );
 
   // =========================================
+  // TOGGLE SIDEBAR (RESPONSIVE-AWARE)
+  // =========================================
+
+  const handleToggleSidebar = () => {
+    const isMobile = window.innerWidth <= 768;
+
+    if (isMobile) {
+      setMobileOpen((prev) => !prev);
+    } else {
+      setCollapsed((prev) => !prev);
+    }
+  };
+
+  // =========================================
   // NEW CHAT
   // =========================================
 
@@ -87,6 +118,7 @@ export default function Sidebar({ onOpenSettings }) {
     newChat();
     setActivePanel(null);
     setOpenMenu(null);
+    setMobileOpen(false);
   };
 
   // =========================================
@@ -97,6 +129,7 @@ export default function Sidebar({ onOpenSettings }) {
     if (!sessionId) return;
     await loadConversation(sessionId);
     setOpenMenu(null);
+    setMobileOpen(false);
   };
 
   // =========================================
@@ -237,16 +270,52 @@ export default function Sidebar({ onOpenSettings }) {
   return (
     <>
       {/* =====================================
+          PERSISTENT MOBILE MENU BUTTON
+          (lives outside the sidebar so it's still
+          visible while the drawer is closed/off-screen)
+      ===================================== */}
+
+      {!mobileOpen && (
+        <button
+          type="button"
+          className="mobile-sidebar-toggle"
+          onClick={() => setMobileOpen(true)}
+          title="Open menu"
+        >
+          <FiMenu />
+        </button>
+      )}
+
+      {/* =====================================
+          MOBILE BACKDROP
+      ===================================== */}
+
+      {mobileOpen && (
+        <div
+          className="sidebar-backdrop visible"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      {/* =====================================
           MAIN SIDEBAR
       ===================================== */}
 
-      <aside className={collapsed ? "sidebar collapsed" : "sidebar"}>
+      <aside
+        className={[
+          "sidebar",
+          collapsed ? "collapsed" : "",
+          mobileOpen ? "mobile-open" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+      >
         {/* HEADER */}
         <div className="sidebar-header">
           <button
             type="button"
             className="sidebar-menu-btn"
-            onClick={() => setCollapsed((prev) => !prev)}
+            onClick={handleToggleSidebar}
             title="Toggle sidebar"
           >
             <FiMenu />
@@ -258,6 +327,15 @@ export default function Sidebar({ onOpenSettings }) {
               Cupid
             </div>
           )}
+
+          <button
+            type="button"
+            className="sidebar-mobile-close"
+            onClick={() => setMobileOpen(false)}
+            title="Close"
+          >
+            <FiX />
+          </button>
         </div>
 
         {/* NEW CHAT */}

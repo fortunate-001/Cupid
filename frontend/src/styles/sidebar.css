@@ -76,6 +76,30 @@
 }
 
 
+/* Close button only shown on mobile drawer */
+.sidebar-mobile-close {
+  display: none;
+
+  margin-left: auto;
+
+  width: 36px;
+  height: 36px;
+
+  align-items: center;
+  justify-content: center;
+
+  border: none;
+  border-radius: 8px;
+
+  background: transparent;
+  color: #d1d1d1;
+
+  cursor: pointer;
+
+  font-size: 18px;
+}
+
+
 /* =========================================================
    BRAND
 ========================================================= */
@@ -351,6 +375,12 @@
   text-transform: uppercase;
 
   letter-spacing: 0.7px;
+
+  gap: 7px;
+}
+
+.history-header svg {
+  font-size: 13px;
 }
 
 
@@ -448,7 +478,7 @@
 
 
 /* =========================================================
-   DELETE BUTTON
+   MORE / OPTIONS BUTTON
 ========================================================= */
 
 .chat-more-btn {
@@ -478,6 +508,11 @@
 
 
 .chat-item-wrapper:hover .chat-more-btn {
+  opacity: 1;
+}
+
+
+.chat-more-btn.visible {
   opacity: 1;
 }
 
@@ -541,7 +576,7 @@
 
 
 /* =========================================================
-   COLLAPSED
+   COLLAPSED (DESKTOP)
 ========================================================= */
 
 .sidebar.collapsed .sidebar-new-chat {
@@ -575,7 +610,7 @@
 
 
 /* =========================================================
-   SIDEBAR PANEL
+   SIDEBAR PANEL (Images / Library / Projects flyout)
 ========================================================= */
 
 .sidebar-panel {
@@ -588,7 +623,7 @@
 
   width: 320px;
 
-  z-index: 100;
+  z-index: 1100;
 
   background: #151515;
 
@@ -771,63 +806,7 @@
 
 
 /* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 768px) {
-
-  .sidebar {
-    width: 240px;
-  }
-
-  .sidebar-panel {
-    left: 240px;
-  }
-
-  .sidebar.collapsed {
-    width: 64px;
-  }
-
-  .sidebar-panel.collapsed-panel {
-    left: 64px;
-  }
-
-}
-
-
-
-/* =========================================================
-   PINNED HEADER
-========================================================= */
-
-.history-header {
-  gap: 7px;
-}
-
-.history-header svg {
-  font-size: 13px;
-}
-
-
-/* =========================================================
-   MORE BUTTON
-========================================================= */
-
-.chat-more-btn {
-  opacity: 0;
-}
-
-.chat-more-btn.visible {
-  opacity: 1;
-}
-
-.chat-item-wrapper:hover .chat-more-btn {
-  opacity: 1;
-}
-
-
-/* =========================================================
-   CONVERSATION MENU
+   CONVERSATION MENU (pin / rename / delete)
 ========================================================= */
 
 .conversation-menu {
@@ -1116,4 +1095,137 @@
 
 .rename-save:hover {
   background: #e8e8e8;
+}
+
+
+/* =========================================================
+   MOBILE BACKDROP (behind the drawer)
+========================================================= */
+
+.sidebar-backdrop {
+  display: none;
+}
+
+
+/* =========================================================
+   PERSISTENT MOBILE MENU BUTTON
+========================================================= */
+
+.mobile-sidebar-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+
+  .mobile-sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    top: 12px;
+    left: 12px;
+
+    width: 38px;
+    height: 38px;
+
+    z-index: 1100;
+
+    border: none;
+    border-radius: 8px;
+
+    background: rgba(20, 20, 20, 0.85);
+    color: #ffffff;
+
+    font-size: 19px;
+
+    cursor: pointer;
+
+    backdrop-filter: blur(4px);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  }
+
+  .mobile-sidebar-toggle:active {
+    background: rgba(40, 40, 40, 0.9);
+  }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — SIDEBAR BECOMES A SLIDE-IN DRAWER
+========================================================= */
+
+@media (max-width: 768px) {
+
+  /* Sidebar is fixed, off-screen by default, full height,
+     and sits ABOVE the chat content instead of squeezing it */
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+
+    width: 260px;
+    height: 100dvh;
+
+    z-index: 1200;
+
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+
+    box-shadow: none;
+  }
+
+  .sidebar.mobile-open {
+    transform: translateX(0);
+    box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Collapsed state is irrelevant on mobile — drawer is
+     either fully open or fully hidden */
+  .sidebar.collapsed {
+    width: 260px;
+  }
+
+  .sidebar.collapsed .sidebar-new-chat,
+  .sidebar.collapsed .sidebar-scroll,
+  .sidebar.collapsed .sidebar-footer {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  /* Show the close (X) button on mobile */
+  .sidebar-mobile-close {
+    display: flex;
+  }
+
+  /* Backdrop dims the chat behind the open drawer */
+  .sidebar-backdrop.visible {
+    display: block;
+
+    position: fixed;
+    inset: 0;
+
+    z-index: 1150;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    animation: backdropFadeIn 0.2s ease;
+  }
+
+  @keyframes backdropFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  /* Images/Library/Projects panel takes full width on mobile
+     instead of a fixed 320px offset from a sidebar that's
+     no longer part of the layout flow */
+  .sidebar-panel {
+    left: 0 !important;
+    width: 100%;
+    z-index: 1250;
+  }
+
 }

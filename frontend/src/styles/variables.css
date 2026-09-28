@@ -1,59 +1,70 @@
-:root{
+/* =========================================================
+   THEME TOKENS
+   Switched by html[data-theme="light"|"dark"]
+   Falls back to dark by default so nothing breaks.
+========================================================= */
 
-    /* Accent (changes when user picks a color) */
+html,
+html[data-theme="dark"] {
+  --bg: #0f0f0f;
+  --bg-secondary: #171717;
+  --bg-tertiary: #1e1e1e;
+  --bg-hover: #262626;
+  --input-bg: #1e1e1e;
 
-    --accent:#10a37f;
+  --sidebar: #171717;
+  --card: #171717;
 
-    --accent-hover:#0e8f70;
+  --text: #ececec;
+  --text-primary: #ececec;
+  --text-secondary: #9b9b9b;
+  --text-muted: #6f6f6f;
 
-    /* Radius */
+  --border: #2a2a2a;
+  --border-color: #2a2a2a;
+  --border-strong: #3a3a3a;
 
-    --radius:16px;
+  --accent-color: #6c5ce7;
+  --accent-hover: #5a4bd1;
+  --primary: #ffffff;
 
-    --transition:.25s;
+  --danger: #ff5c5c;
+  --danger-bg: rgba(255, 92, 92, 0.1);
 
+  --scroll-thumb: #333333;
+  --scroll-thumb-hover: #4a4a4a;
+
+  --backdrop: rgba(0, 0, 0, 0.55);
 }
 
-/* ===========================
-   DARK THEME (Default)
-=========================== */
+html[data-theme="light"] {
+  --bg: #ffffff;
+  --bg-secondary: #f9f9f9;
+  --bg-tertiary: #f1f1f1;
+  --bg-hover: #ececec;
+  --input-bg: #f4f4f5;
 
-[data-theme="dark"]{
+  --sidebar: #f9f9f9;
+  --card: #ffffff;
 
-    --bg:#0f0f0f;
+  --text: #0d0d0d;
+  --text-primary: #0d0d0d;
+  --text-secondary: #5c5c5c;
+  --text-muted: #8e8e8e;
 
-    --sidebar:#171717;
+  --border: #e5e5e5;
+  --border-color: #e5e5e5;
+  --border-strong: #d0d0d0;
 
-    --card:#202123;
+  --accent-color: #6c5ce7;
+  --accent-hover: #5a4bd1;
+  --primary: #0d0d0d;
 
-    --border:#2d2d2d;
+  --danger: #d93a3a;
+  --danger-bg: rgba(217, 58, 58, 0.08);
 
-    --text:#ffffff;
+  --scroll-thumb: #c7c7c7;
+  --scroll-thumb-hover: #a8a8a8;
 
-    --text-secondary:#9ca3af;
-
-    --danger:#ef4444;
-
-}
-
-/* ===========================
-   LIGHT THEME
-=========================== */
-
-[data-theme="light"]{
-
-    --bg:#f5f5f5;
-
-    --sidebar:#ffffff;
-
-    --card:#ffffff;
-
-    --border:#e5e5e5;
-
-    --text:#111827;
-
-    --text-secondary:#6b7280;
-
-    --danger:#dc2626;
-
+  --backdrop: rgba(0, 0, 0, 0.35);
 }

@@ -6,7 +6,7 @@ import nodemailer from "nodemailer";
 import user from "../models/User.js";
 
 import User from "../models/User.js";
-import connectDB from "../../../backend/lib/mongodb.js";
+import connectDB from "../../lib/mongodb.js";
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
