@@ -1,34 +1,22 @@
-import { FaRobot, FaUserCircle } from "react-icons/fa";
-import { useState } from "react";
+import { FaRobot } from "react-icons/fa";
+import { FiMenu } from "react-icons/fi";
 
 
-
-export default function Header() {
-
-  const [openSettings, setOpenSettings] =
-    useState(false);
-
+export default function Header({ onMenuClick }) {
   return (
+    <header className="chat-header">
+      <button
+        className="chat-menu-btn"
+        onClick={onMenuClick}
+        aria-label="Open menu"
+      >
+        <FiMenu />
+      </button>
 
-    <>
-
-      <header className="chat-header">
-
-        <div className="logo">
-
-          <FaRobot />
-
-          <h2>Cupid AI</h2>
-
-        </div>
-
-      
-
-      </header>
-
-
-    </>
-
+      <div className="logo">
+        <FaRobot />
+        <h2>Cupid AI</h2>
+      </div>
+    </header>
   );
-
 }

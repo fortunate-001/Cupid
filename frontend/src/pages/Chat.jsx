@@ -13,9 +13,7 @@ import Typing from "../components/chat/Typing";
 
 import AuthModal from "../components/auth/AuthModal";
 
-// ❌ REMOVE these imports - they don't exist anymore
-// import SettingsContent from "../components/settings/SettingsContext";
-// import SettingsModal from "../components/settings/SettingsModal";
+
 
 import { useAuth } from "../context/AuthContext";
 import { useChat } from "../context/ChatContext";
@@ -36,8 +34,7 @@ export default function Chat() {
 
   const bottomRef = useRef(null);
   const [showAuth, setShowAuth] = useState(false);
-  // ❌ Remove settingsOpen state - using navigate instead
-  // const [settingsOpen, setSettingsOpen] = useState(false);
+
 
   // =========================================
   // GET USER NAME
