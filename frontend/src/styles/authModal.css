@@ -178,3 +178,63 @@
 .auth-switch-btn:hover {
   text-decoration: underline;
 }
+
+
+/* =========================================
+   FORM FIELDS
+========================================= */
+
+.auth-field {
+  width: 100%;
+}
+
+.auth-field label {
+  display: block;
+  width: 100%;
+  margin-bottom: 7px;
+  text-align: left !important;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.auth-field input {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Forgot Password */
+.forgot-password-link {
+  display: block;
+  margin-top: 8px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #fff !important;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-align: left !important;
+}
+
+.forgot-password-link:hover {
+  color: #fff !important;
+  text-decoration: underline;
+  opacity: 0.75;
+}
+
+/* Sign Up / Log In switch */
+.auth-switch button {
+  background: transparent;
+  border: none;
+  color: #fff !important;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: inherit;
+  padding: 0;
+}
+
+.auth-switch button:hover {
+  text-decoration: underline;
+  opacity: 0.75;
+}
