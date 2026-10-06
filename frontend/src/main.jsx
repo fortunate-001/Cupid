@@ -8,15 +8,15 @@ import { AuthProvider } from "./context/AuthContext";
 import { ChatProvider } from "./context/ChatContext";
 
 import App from "./App";
-// import "./styles/index.css";
+
 import "./styles/globals.css";
 import "./styles/theme.css";
+
 
 ReactDOM.createRoot(
   document.getElementById("root")
 ).render(
   <React.StrictMode>
-
     <BrowserRouter>
 
       <ThemeProvider>
@@ -25,9 +25,7 @@ ReactDOM.createRoot(
 
           <ChatProvider>
 
-            <Toaster
-              position="top-right"
-            />
+            <Toaster position="top-right" />
 
             <App />
 
@@ -38,6 +36,5 @@ ReactDOM.createRoot(
       </ThemeProvider>
 
     </BrowserRouter>
-
   </React.StrictMode>
 );

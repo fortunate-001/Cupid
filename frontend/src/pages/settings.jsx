@@ -2,14 +2,33 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Navigate } from 'react-router-dom';
 import {
   FiSettings, FiBell, FiSliders, FiGrid, FiMic, FiCreditCard,
   FiBarChart2, FiPieChart, FiDatabase, FiLock, FiHardDrive,
   FiShield, FiUserCheck, FiUsers, FiInfo, FiLogOut, FiArrowLeft,
-  FiChevronDown, FiCheck, FiX, FiSearch,
+  FiChevronDown, FiCheck, FiX, FiSearch, FiVolume2,
 } from 'react-icons/fi';
-// import './Settings.css';
+// import './settings.css';
+
+/* ---------------- Accent color map ---------------- */
+const ACCENT_MAP = {
+  Default: '#6c5ce7',
+  Blue:    '#3b82f6',
+  Green:   '#10a37f',
+  Pink:    '#ec4899',
+  Orange:  '#f97316',
+  Red:     '#ef4444',
+  Purple:  '#a855f7',
+  Teal:    '#14b8a6',
+};
+
+/* ---------------- Voice options ---------------- */
+const VOICE_OPTIONS = [
+  { id: 'female',  label: 'Female (Samantha / Zira)' },
+  { id: 'male',    label: 'Male (Daniel / David)' },
+  { id: 'neutral', label: 'Neutral (default)' },
+];
 
 /* ---------------- Custom Dropdown ---------------- */
 function Dropdown({ value, options, onChange, width = 130 }) {
@@ -37,22 +56,26 @@ function Dropdown({ value, options, onChange, width = 130 }) {
 
       {open && (
         <div className="dd-menu" role="listbox">
-          {options.map((opt) => (
-            <button
-              key={opt}
-              type="button"
-              className={`dd-item ${value === opt ? 'active' : ''}`}
-              onClick={() => {
-                onChange(opt);
-                setOpen(false);
-              }}
-              role="option"
-              aria-selected={value === opt}
-            >
-              <span>{opt}</span>
-              {value === opt && <FiCheck className="dd-check" />}
-            </button>
-          ))}
+          {options.map((opt) => {
+            const val = typeof opt === 'string' ? opt : opt.id;
+            const label = typeof opt === 'string' ? opt : opt.label;
+            return (
+              <button
+                key={val}
+                type="button"
+                className={`dd-item ${value === val ? 'active' : ''}`}
+                onClick={() => {
+                  onChange(val);
+                  setOpen(false);
+                }}
+                role="option"
+                aria-selected={value === val}
+              >
+                <span>{label}</span>
+                {value === val && <FiCheck className="dd-check" />}
+              </button>
+            );
+          })}
         </div>
       )}
     </div>
@@ -68,6 +91,7 @@ export default function Settings() {
   const [activeTab, setActiveTab] = useState('General');
   const [query, setQuery] = useState('');
 
+  /* ---------- Persisted prefs ---------- */
   const [contrast, setContrast] = useState(
     () => localStorage.getItem('contrast') || 'System'
   );
@@ -86,49 +110,136 @@ export default function Settings() {
   const [training, setTraining] = useState(
     () => localStorage.getItem('training') === 'true'
   );
+  const [pushNotif, setPushNotif] = useState(
+    () => localStorage.getItem('pushNotif') === 'true'
+  );
+  const [emailNotif, setEmailNotif] = useState(
+    () => localStorage.getItem('emailNotif') === 'true'
+  );
+
+  /* ---------- Voice settings (use cupidVoicePreference key) ---------- */
+  const [voiceGender, setVoiceGender] = useState(
+    () =>
+      localStorage.getItem('cupidVoicePreference') ||
+      localStorage.getItem('voiceGender') ||
+      'female'
+  );
+  const [voiceRate, setVoiceRate] = useState(
+    () => Number(localStorage.getItem('voiceRate')) || 1
+  );
+  const [voicePitch, setVoicePitch] = useState(
+    () => Number(localStorage.getItem('voicePitch')) || 1
+  );
+  const [voiceVolume, setVoiceVolume] = useState(
+    () => Number(localStorage.getItem('voiceVolume')) || 1
+  );
+  const [availableVoices, setAvailableVoices] = useState([]);
+
   const [showBanner, setShowBanner] = useState(true);
 
-  /* Persist small prefs */
+  /* ---------- Persist small prefs ---------- */
   useEffect(() => { localStorage.setItem('contrast', contrast); }, [contrast]);
   useEffect(() => { localStorage.setItem('accent', accent); }, [accent]);
   useEffect(() => { localStorage.setItem('language', language); }, [language]);
   useEffect(() => { localStorage.setItem('dictation', dictation); }, [dictation]);
   useEffect(() => { localStorage.setItem('memory', memory); }, [memory]);
   useEffect(() => { localStorage.setItem('training', training); }, [training]);
+  useEffect(() => { localStorage.setItem('pushNotif', pushNotif); }, [pushNotif]);
+  useEffect(() => { localStorage.setItem('emailNotif', emailNotif); }, [emailNotif]);
+  useEffect(() => { localStorage.setItem('voiceRate', voiceRate); }, [voiceRate]);
+  useEffect(() => { localStorage.setItem('voicePitch', voicePitch); }, [voicePitch]);
+  useEffect(() => { localStorage.setItem('voiceVolume', voiceVolume); }, [voiceVolume]);
 
-  /* Apply accent color to CSS var */
+  /* ---------- Persist + broadcast voice gender ---------- */
   useEffect(() => {
-    const map = {
-      Default: '#6c5ce7',
-      Blue: '#3b82f6',
-      Green: '#10a37f',
-      Pink: '#ec4899',
-      Orange: '#f97316',
-    };
-    document.documentElement.style.setProperty('--accent-color', map[accent] || map.Default);
+    localStorage.setItem('cupidVoicePreference', voiceGender);
+    // Keep legacy key for backwards compat
+    localStorage.setItem('voiceGender', voiceGender);
+    // Notify MessageBubble and any other listener
+    window.dispatchEvent(
+      new CustomEvent('cupidVoiceChanged', { detail: voiceGender })
+    );
+  }, [voiceGender]);
+
+  /* ---------- Apply accent color to ALL accent vars ---------- */
+  useEffect(() => {
+    const color = ACCENT_MAP[accent] || ACCENT_MAP.Default;
+    const root = document.documentElement;
+    root.style.setProperty('--accent-color', color);
+    root.style.setProperty('--accent', color);
+    root.style.setProperty('--accent-hover', shadeColor(color, -15));
+    root.style.setProperty('--accent-light', hexToRgba(color, 0.12));
   }, [accent]);
 
-  /* Apply contrast */
+  /* ---------- Apply contrast ---------- */
   useEffect(() => {
-    document.documentElement.setAttribute('data-contrast', contrast.toLowerCase());
+    document.documentElement.setAttribute(
+      'data-contrast',
+      contrast.toLowerCase()
+    );
   }, [contrast]);
 
+  /* ---------- Load available browser voices ---------- */
+  useEffect(() => {
+    if (!('speechSynthesis' in window)) return;
+    const loadVoices = () => {
+      setAvailableVoices(window.speechSynthesis.getVoices());
+    };
+    loadVoices();
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    return () => {
+      window.speechSynthesis.onvoiceschanged = null;
+    };
+  }, []);
+
+  /* ---------- Pick a voice matching gender ---------- */
+  const pickVoice = () => {
+    if (!availableVoices.length) return null;
+    const femaleKeywords = ['female', 'samantha', 'zira', 'victoria', 'karen', 'moira', 'tessa', 'aria', 'hazel'];
+    const maleKeywords   = ['male', 'daniel', 'david', 'alex', 'fred', 'mark', 'guy', 'josh', 'antoni'];
+
+    const englishVoices = availableVoices.filter((v) => v.lang.startsWith('en'));
+    const pool = englishVoices.length ? englishVoices : availableVoices;
+
+    if (voiceGender === 'female') {
+      return pool.find((v) =>
+        femaleKeywords.some((k) => v.name.toLowerCase().includes(k))
+      ) || pool[0];
+    }
+    if (voiceGender === 'male') {
+      return pool.find((v) =>
+        maleKeywords.some((k) => v.name.toLowerCase().includes(k))
+      ) || pool[0];
+    }
+    return pool[0];
+  };
+
+  /* ---------- Preview voice ---------- */
+  const previewVoice = () => {
+    if (!('speechSynthesis' in window)) {
+      alert('Your browser does not support speech synthesis.');
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const utter = new SpeechSynthesisUtterance(
+      `Hi, I'm Cupid. This is how I sound as a ${voiceGender} voice.`
+    );
+    const v = pickVoice();
+    if (v) utter.voice = v;
+    utter.rate = voiceRate;
+    utter.pitch = voicePitch;
+    utter.volume = voiceVolume;
+    window.speechSynthesis.speak(utter);
+  };
+
   const tabs = [
-    { id: 'General',         icon: <FiSettings />,   label: 'General' },
-    { id: 'Notifications',   icon: <FiBell />,       label: 'Notifications' },
-    { id: 'Personalization', icon: <FiSliders />,    label: 'Personalization' },
-    { id: 'Plugins',         icon: <FiGrid />,       label: 'Plugins' },
-    { id: 'Voice',           icon: <FiMic />,        label: 'Voice' },
-    { id: 'Billing',         icon: <FiCreditCard />, label: 'Billing' },
-    { id: 'Usage',           icon: <FiBarChart2 />,  label: 'Usage' },
-    { id: 'Analytics',       icon: <FiPieChart />,   label: 'Analytics' },
-    { id: 'Data controls',   icon: <FiDatabase />,   label: 'Data controls' },
-    { id: 'Storage',         icon: <FiHardDrive />,  label: 'Storage' },
-    { id: 'Safety',          icon: <FiShield />,     label: 'Safety' },
-    { id: 'Security and login', icon: <FiLock />,    label: 'Security and login' },
-    { id: 'Parental controls',  icon: <FiUserCheck />, label: 'Parental controls' },
-    { id: 'Trusted contact',    icon: <FiUsers />,   label: 'Trusted contact' },
-    { id: 'About',           icon: <FiInfo />,       label: 'About' },
+    { id: 'General',            icon: <FiSettings />, label: 'General' },
+    { id: 'Notifications',      icon: <FiBell />,     label: 'Notifications' },
+    { id: 'Personalization',    icon: <FiSliders />,  label: 'Personalization' },
+    { id: 'Voice',              icon: <FiMic />,      label: 'Voice' },
+    { id: 'Data controls',      icon: <FiDatabase />, label: 'Data controls' },
+    { id: 'Security and login', icon: <FiLock />,     label: 'Security and login' },
+    { id: 'About',              icon: <FiInfo />,     label: 'About' },
   ];
 
   const filteredTabs = tabs.filter((t) =>
@@ -149,6 +260,7 @@ export default function Settings() {
     const data = {
       user: user || null,
       theme, contrast, accent, language, dictation, memory, training,
+      voiceGender, voiceRate, voicePitch, voiceVolume,
       exportedAt: new Date().toISOString(),
     };
     const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
@@ -195,11 +307,7 @@ export default function Settings() {
 
       <div className="gpt-group">
         <Row label="Appearance">
-          <Dropdown
-            value={theme}
-            options={['System', 'Light', 'Dark']}
-            onChange={setTheme}
-          />
+          <Dropdown value={theme} options={['System', 'Light', 'Dark']} onChange={setTheme} />
         </Row>
 
         <Row label="Contrast">
@@ -210,10 +318,10 @@ export default function Settings() {
           />
         </Row>
 
-        <Row label="Accent color">
+        <Row label="Accent color" desc="Choose your Cupid theme color.">
           <Dropdown
             value={accent}
-            options={['Default', 'Blue', 'Green', 'Pink', 'Orange']}
+            options={Object.keys(ACCENT_MAP)}
             onChange={setAccent}
           />
         </Row>
@@ -248,6 +356,7 @@ export default function Settings() {
           <button
             className={`gpt-toggle ${memory ? 'active' : ''}`}
             onClick={() => setMemory((v) => !v)}
+            aria-pressed={memory}
           >
             <span />
           </button>
@@ -264,10 +373,84 @@ export default function Settings() {
       <h2 className="gpt-pane-title">Notifications</h2>
       <div className="gpt-group">
         <Row label="Push notifications" desc="Get notified about responses.">
-          <button className="gpt-toggle"><span /></button>
+          <button
+            className={`gpt-toggle ${pushNotif ? 'active' : ''}`}
+            onClick={() => setPushNotif((v) => !v)}
+            aria-pressed={pushNotif}
+          >
+            <span />
+          </button>
         </Row>
         <Row label="Email updates" desc="Product news and feature releases.">
-          <button className="gpt-toggle"><span /></button>
+          <button
+            className={`gpt-toggle ${emailNotif ? 'active' : ''}`}
+            onClick={() => setEmailNotif((v) => !v)}
+            aria-pressed={emailNotif}
+          >
+            <span />
+          </button>
+        </Row>
+      </div>
+    </div>
+  );
+
+  /* ---------------- Voice tab ---------------- */
+  const renderVoice = () => (
+    <div className="gpt-pane">
+      <h2 className="gpt-pane-title">Voice</h2>
+
+      <div className="gpt-group">
+        <Row label="Voice gender" desc="Choose how Cupid sounds when speaking.">
+          <Dropdown
+            value={voiceGender}
+            options={VOICE_OPTIONS}
+            onChange={setVoiceGender}
+            width={200}
+          />
+        </Row>
+
+        <Row label="Preview voice" desc="Hear how Cupid will sound.">
+          <button className="gpt-outline-btn gpt-preview-btn" onClick={previewVoice}>
+            <FiVolume2 /> Play sample
+          </button>
+        </Row>
+      </div>
+
+      <div className="gpt-group">
+        <Row label="Speaking rate" desc={`Speed: ${voiceRate.toFixed(2)}x`}>
+          <input
+            type="range"
+            min="0.5"
+            max="2"
+            step="0.05"
+            value={voiceRate}
+            onChange={(e) => setVoiceRate(Number(e.target.value))}
+            className="gpt-range"
+          />
+        </Row>
+
+        <Row label="Pitch" desc={`Pitch: ${voicePitch.toFixed(2)}`}>
+          <input
+            type="range"
+            min="0"
+            max="2"
+            step="0.05"
+            value={voicePitch}
+            onChange={(e) => setVoicePitch(Number(e.target.value))}
+            className="gpt-range"
+          />
+        </Row>
+
+        <Row label="Volume" desc={`Volume: ${Math.round(voiceVolume * 100)}%`}>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={voiceVolume}
+            onChange={(e) => setVoiceVolume(Number(e.target.value))}
+            className="gpt-range"
+          />
         </Row>
       </div>
     </div>
@@ -281,6 +464,7 @@ export default function Settings() {
           <button
             className={`gpt-toggle ${training ? 'active' : ''}`}
             onClick={() => setTraining((v) => !v)}
+            aria-pressed={training}
           >
             <span />
           </button>
@@ -358,6 +542,7 @@ export default function Settings() {
       case 'General':            return renderGeneral();
       case 'Notifications':      return renderNotifications();
       case 'Personalization':    return renderPersonalization();
+      case 'Voice':              return renderVoice();
       case 'Data controls':      return renderDataControls();
       case 'Security and login': return renderSecurity();
       case 'About':              return renderAbout();
@@ -411,4 +596,33 @@ export default function Settings() {
       </div>
     </div>
   );
+}
+
+export function SettingsPage() {
+  const { user, isGuest } = useAuth();
+  const authenticated = user || isGuest;
+
+  return authenticated ? <Settings /> : <Navigate to="/" replace />;
+}
+
+/* =========================================================
+   Utility helpers
+========================================================= */
+function shadeColor(hex, percent) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  let r = (num >> 16) + Math.round(2.55 * percent);
+  let g = ((num >> 8) & 0x00ff) + Math.round(2.55 * percent);
+  let b = (num & 0x0000ff) + Math.round(2.55 * percent);
+  r = Math.max(0, Math.min(255, r));
+  g = Math.max(0, Math.min(255, g));
+  b = Math.max(0, Math.min(255, b));
+  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, '0')}`;
+}
+
+function hexToRgba(hex, alpha) {
+  const num = parseInt(hex.replace('#', ''), 16);
+  const r = num >> 16;
+  const g = (num >> 8) & 0x00ff;
+  const b = num & 0x0000ff;
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`;
 }

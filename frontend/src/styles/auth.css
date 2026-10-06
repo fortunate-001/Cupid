@@ -9,7 +9,6 @@
   position: relative;
 }
 
-
 /* =========================================
    AUTH OVERLAY
 ========================================= */
@@ -17,21 +16,15 @@
 .auth-overlay {
   position: fixed;
   inset: 0;
-
   z-index: 9999;
-
   display: flex;
   align-items: center;
   justify-content: center;
-
   padding: 20px;
-
   background: rgba(0, 0, 0, 0.45);
-
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
-
 
 /* =========================================
    AUTH MODAL
@@ -40,25 +33,17 @@
 .auth-modal {
   width: 100%;
   max-width: 430px;
-
   background: var(--card);
-
-  border: 1px solid var(--border);
-
+  border: 1px solid var(--border-color);
   border-radius: 18px;
-
   padding: 40px;
-
   display: flex;
   flex-direction: column;
-
   gap: 18px;
-
   animation: fade 0.3s ease;
-
   box-sizing: border-box;
+  color: var(--text);
 }
-
 
 /* =========================================
    ANIMATION
@@ -69,13 +54,11 @@
     opacity: 0;
     transform: translateY(12px) scale(0.98);
   }
-
   to {
     opacity: 1;
     transform: translateY(0) scale(1);
   }
 }
-
 
 /* =========================================
    AUTH HEADER
@@ -87,22 +70,16 @@
 
 .auth-modal-header h1 {
   color: var(--text);
-
   text-align: center;
-
   margin: 0 0 6px;
 }
 
 .auth-modal-header p {
   color: var(--text-secondary);
-
   text-align: center;
-
   margin: 0;
-
   line-height: 1.5;
 }
-
 
 /* =========================================
    AUTH LOGO
@@ -110,93 +87,62 @@
 
 .auth-logo {
   font-size: 36px;
-
   display: block;
-
   text-align: center;
-
   margin-bottom: 8px;
-
-  color: #ffffff;
+  color: var(--text);
 }
 
-
 /* =========================================
-   AUTH BUTTONS
+   AUTH BUTTONS (base)
 ========================================= */
 
 .auth-btn {
   width: 100%;
-
   height: 52px;
-
   border-radius: 12px;
-
   border: none;
-
   background: var(--accent);
-
-  color: #ffffff;
-
+  color: var(--bg);
   font-size: 15px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 10px;
-
   transition: all 0.2s ease;
 }
 
 .auth-btn:hover {
   opacity: 0.9;
-
   transform: translateY(-1px);
 }
 
-
 /* =========================================
    GOOGLE BUTTON
+   NOTE: Google brand color stays white
 ========================================= */
 
 .auth-btn.google {
   background: #ffffff;
-
   color: #111111;
-
   border: 1px solid #dddddd;
 }
 
-.auth-btn.google:hover {
+/* .auth-btn.google:hover {
   background: #eeeeee;
-
   color: #111111;
-}
-
+} */
 
 /* =========================================
    EMAIL BUTTON
 ========================================= */
 
 .auth-btn.email {
-  background: #ffffff;
-
-  color: #111111;
+  background: var(--accent);
+  /* color: var(--bg); */
 }
-
-.auth-btn.email:hover {
-  background: #eeeeee;
-
-  color: #111111;
-}
-
 
 /* =========================================
    GOOGLE ICON
@@ -204,10 +150,8 @@
 
 .google-icon {
   font-weight: 700;
-
   font-size: 18px;
 }
-
 
 /* =========================================
    GUEST BUTTON
@@ -215,32 +159,21 @@
 
 .guest-btn {
   width: 100%;
-
   height: 52px;
-
-  border: 1px solid var(--border);
-
+  border: 1px solid var(--border-color);
   border-radius: 12px;
-
   background: transparent;
-
   color: var(--text-secondary);
-
   font-size: 15px;
-
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
 .guest-btn:hover {
-  color: #ffffff;
-
-  border-color: #555555;
-
-  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  border-color: var(--text-muted);
+  background: var(--bg-hover);
 }
-
 
 /* =========================================
    AUTH DIVIDER
@@ -248,48 +181,35 @@
 
 .auth-divider {
   display: flex;
-
   align-items: center;
-
   gap: 12px;
-
-  color: #666666;
-
+  color: var(--text-muted);
   font-size: 12px;
-
   margin: 2px 0;
 }
 
 .auth-divider::before,
 .auth-divider::after {
   content: "";
-
   flex: 1;
-
   height: 1px;
-
-  background: var(--border);
+  background: var(--border-color);
 }
 
 .auth-divider span {
-  color: #666666;
+  color: var(--text-muted);
 }
-
 
 /* =========================================
    AUTH FOOTER
 ========================================= */
 
 .auth-footer-text {
-  color: #777777;
-
+  color: var(--text-muted);
   font-size: 12px;
-
   text-align: center;
-
   margin: 0;
 }
-
 
 /* =========================================
    AUTH FORM
@@ -297,12 +217,9 @@
 
 .auth-form {
   display: flex;
-
   flex-direction: column;
-
   gap: 14px;
 }
-
 
 /* =========================================
    AUTH FIELD
@@ -310,96 +227,63 @@
 
 .auth-field {
   display: flex;
-
   flex-direction: column;
-
   gap: 6px;
 }
 
 .auth-field label {
   color: var(--text);
-
   font-size: 13px;
-
   font-weight: 500;
+  text-align: left;
 }
 
 .auth-field input {
   width: 100%;
-
   height: 46px;
-
   padding: 0 14px;
-
   box-sizing: border-box;
-
-  background: #111111;
-
-  color: #ffffff;
-
-  border: 1px solid var(--border);
-
+  background: var(--input-bg);
+  color: var(--text);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
-
   outline: none;
-
   font-size: 14px;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .auth-field input::placeholder {
-  color: #555555;
+  color: var(--text-muted);
 }
 
 .auth-field input:focus {
-  border-color: #777777;
-
-  box-shadow:
-    0 0 0 3px rgba(255, 255, 255, 0.05);
+  border-color: var(--text-muted);
+  box-shadow: 0 0 0 3px var(--accent-light);
 }
-
 
 /* =========================================
    FORGOT PASSWORD
-   IMPORTANT: JSX USES
-   .forgot-password-link
 ========================================= */
 
 .forgot-password-link {
   margin-top: 8px;
-
   padding: 0;
-
   border: none;
-
   background: transparent;
-
-  color: #ffffff !important;
-
+  color: var(--text) !important;
   font-size: 13px;
-
   font-weight: 500;
-
   cursor: pointer;
-
   opacity: 1;
-
   text-align: left;
-
   transition: opacity 0.2s ease;
 }
 
 .forgot-password-link:hover {
-  color: #ffffff !important;
-
+  color: var(--text) !important;
   opacity: 0.75;
-
   text-decoration: underline;
 }
-
 
 /* =========================================
    BACK BUTTON
@@ -407,32 +291,21 @@
 
 .auth-back {
   display: flex;
-
   align-items: center;
-
   gap: 8px;
-
   padding: 8px 0;
-
   border: none;
-
   background: transparent;
-
-  color: #888888;
-
+  color: var(--text-muted);
   font-size: 14px;
-
   cursor: pointer;
-
   margin-bottom: 16px;
-
   transition: color 0.2s ease;
 }
 
 .auth-back:hover {
-  color: #ffffff;
+  color: var(--text);
 }
-
 
 /* =========================================
    SUBMIT BUTTON
@@ -440,40 +313,27 @@
 
 .auth-submit {
   width: 100%;
-
   height: 52px;
-
   border: none;
-
   border-radius: 12px;
-
-  background: #ffffff;
-
-  color: #111111;
-
+  background: var(--accent);
+  color: var(--bg);
   font-size: 15px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   transition: all 0.2s ease;
 }
 
 .auth-submit:hover:not(:disabled) {
-  background: #eeeeee;
-
+  background: var(--accent-hover);
   transform: translateY(-1px);
 }
 
 .auth-submit:disabled {
   opacity: 0.5;
-
   cursor: not-allowed;
-
   transform: none;
 }
-
 
 /* =========================================
    AUTH SWITCH
@@ -481,53 +341,30 @@
 
 .auth-switch {
   display: flex;
-
   align-items: center;
-
   justify-content: center;
-
   gap: 4px;
-
-  color: #888888;
-
+  color: var(--text-secondary);
   font-size: 13px;
-
   margin-top: 4px;
 }
 
-
-/* =========================================
-   SIGN UP / LOG IN BUTTON
-   JSX DOES NOT HAVE A CLASS,
-   SO TARGET THE BUTTON INSIDE .auth-switch
-========================================= */
-
 .auth-switch button {
   background: none;
-
   border: none;
-
-  color: #ffffff !important;
-
+  color: var(--text) !important;
   font-size: 13px;
-
   font-weight: 600;
-
   cursor: pointer;
-
   padding: 0;
-
   transition: opacity 0.2s ease;
 }
 
 .auth-switch button:hover {
-  color: #ffffff !important;
-
+  color: var(--text) !important;
   opacity: 0.75;
-
   text-decoration: underline;
 }
-
 
 /* =========================================
    ERROR
@@ -535,20 +372,13 @@
 
 .auth-error {
   margin-bottom: 16px;
-
   padding: 12px 14px;
-
   border-radius: 10px;
-
   font-size: 14px;
-
-  background: rgba(255, 255, 255, 0.05);
-
-  border: 1px solid #444444;
-
-  color: #ffffff;
+  background: var(--accent-light);
+  border: 1px solid var(--border-color);
+  color: var(--text);
 }
-
 
 /* =========================================
    SUCCESS
@@ -556,20 +386,13 @@
 
 .auth-success {
   margin-bottom: 16px;
-
   padding: 12px 14px;
-
   border-radius: 10px;
-
   font-size: 14px;
-
-  background: rgba(255, 255, 255, 0.05);
-
-  border: 1px solid #444444;
-
-  color: #ffffff;
+  background: rgba(34, 197, 94, 0.12);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  color: #22c55e;
 }
-
 
 /* =========================================
    SECONDARY GUEST BUTTON
@@ -577,36 +400,28 @@
 
 .guest-btn.secondary {
   background: transparent;
-
-  color: #888888;
-
-  border: 1px solid var(--border);
+  color: var(--text-muted);
+  border: 1px solid var(--border-color);
 }
 
 .guest-btn.secondary:hover {
-  color: #ffffff;
-
-  border-color: #555555;
+  color: var(--text);
+  border-color: var(--text-muted);
 }
-
 
 /* =========================================
    RESPONSIVE
 ========================================= */
 
 @media (max-width: 480px) {
-
   .auth-overlay {
     padding: 16px;
   }
 
   .auth-modal {
     width: 100%;
-
     max-width: 100%;
-
     padding: 30px 22px;
-
     border-radius: 16px;
   }
 
@@ -618,13 +433,11 @@
   .guest-btn,
   .auth-submit {
     height: 48px;
-
     font-size: 14px;
   }
 
   .auth-field input {
     height: 44px;
-
     font-size: 13px;
   }
 }

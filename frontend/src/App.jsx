@@ -63,16 +63,13 @@ function AppRoutes() {
 
       <Route path="/reset-password" element={<ResetPassword />} />
 
+      {/* GOOGLE AUTH SUCCESS */}
+
+      <Route path="/auth/google/success" element={<GoogleAuthSuccess />} />
+
       {/* CHAT */}
 
-      <Route
-        path="/chat"
-        element={
-          <PrivateRoute>
-            <Chat />
-          </PrivateRoute>
-        }
-      />
+      <Route path="/chat" element={ <PrivateRoute> <Chat /> </PrivateRoute> } />
 
       {/* SETTINGS */}
 

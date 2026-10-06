@@ -10,139 +10,64 @@ import { useNavigate } from "react-router-dom";
 
 import * as authService from "../services/auth.jsx";
 
-
 const AuthContext = createContext();
-
 
 // =========================================
 // PROVIDER
 // =========================================
 
-export function AuthProvider({
-  children,
-}) {
-
+export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isGuest, setIsGuest] = useState(false);
-  const navigate = useNavigate();
 
+  const navigate = useNavigate();
 
   // =========================================
   // LOAD USER
   // =========================================
 
   useEffect(() => {
-
     async function loadUser() {
-
       try {
-
-        // ✅ Check guest mode from localStorage (not sessionStorage)
-        const guestMode =
-          localStorage.getItem("guest_mode");
-
+        // Check guest mode from localStorage
+        const guestMode = localStorage.getItem("guest_mode");
 
         // =====================================
         // GUEST MODE HAS PRIORITY
         // =====================================
 
         if (guestMode === "true") {
-
-          // Clear any old account data
           localStorage.removeItem("token");
           localStorage.removeItem("user");
 
           setUser(null);
           setIsGuest(true);
           setLoading(false);
+
           return;
-
         }
-
-        const loginWithGoogle =
-  async (
-    token
-  ) => {
-
-    localStorage.removeItem(
-      "guest_mode"
-    );
-
-
-    localStorage.setItem(
-      "token",
-      token
-    );
-
-
-    const data =
-      await authService.getCurrentUser();
-
-
-    if (
-      !data?.user
-    ) {
-
-      throw new Error(
-        "Unable to load Google account."
-      );
-
-    }
-
-
-    localStorage.setItem(
-
-      "user",
-
-      JSON.stringify(
-        data.user
-      )
-
-    );
-
-
-    setUser(
-      data.user
-    );
-
-
-    setIsGuest(
-      false
-    );
-
-
-    return data;
-
-  };
-
 
         // =====================================
         // NORMAL AUTHENTICATION
         // =====================================
 
-        const token =
-          localStorage.getItem("token");
-
+        const token = localStorage.getItem("token");
 
         // No token = neither logged in nor guest
         if (!token) {
-
           setUser(null);
           setIsGuest(false);
           setLoading(false);
+
           return;
-
         }
-
 
         // =====================================
         // GET CURRENT USER
         // =====================================
 
-        const data =
-          await authService.getCurrentUser();
-
+        const data = await authService.getCurrentUser();
 
         if (data?.user) {
           setUser(data.user);
@@ -151,13 +76,11 @@ export function AuthProvider({
           // Token might be invalid
           localStorage.removeItem("token");
           localStorage.removeItem("user");
+
           setUser(null);
           setIsGuest(false);
         }
-
-
       } catch (error) {
-
         console.error("Failed to load user:", error);
 
         localStorage.removeItem("token");
@@ -166,271 +89,188 @@ export function AuthProvider({
 
         setUser(null);
         setIsGuest(false);
-
-
       } finally {
-
         setLoading(false);
-
       }
-
     }
 
-
     loadUser();
-
   }, []);
-
 
   // =========================================
   // LOGIN
   // =========================================
 
-  const login =
-    async (credentials) => {
+  const login = async (credentials) => {
+    const data = await authService.login(credentials);
 
-      const data =
-        await authService.login(credentials);
+    console.log("LOGIN RESPONSE:", data);
 
-      console.log("LOGIN RESPONSE:", data);
+    // Remove guest mode
+    localStorage.removeItem("guest_mode");
 
-      // =====================================
-      // REMOVE GUEST MODE
-      // =====================================
+    // Save token
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    } else {
+      console.error("NO TOKEN FOUND IN LOGIN RESPONSE!");
+    }
 
-      localStorage.removeItem("guest_mode");
+    // Save user
+    if (data.user) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
+      setUser(data.user);
+    }
 
-      // =====================================
-      // SAVE TOKEN
-      // =====================================
+    setIsGuest(false);
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      } else {
-        console.error("NO TOKEN FOUND IN LOGIN RESPONSE!");
-      }
+    // Navigate to chat
+    navigate("/chat");
 
-
-      // =====================================
-      // SAVE USER
-      // =====================================
-
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setUser(data.user);
-      }
-
-
-      setIsGuest(false);
-
-      // ✅ Navigate to chat after login
-      navigate('/chat');
-
-      return data;
-
-    };
-
+    return data;
+  };
 
   // =========================================
   // REGISTER
   // =========================================
 
-  const register =
-    async (userData) => {
+  const register = async (userData) => {
+    const data = await authService.register(userData);
 
-      const data =
-        await authService.register(userData);
+    // Remove guest mode
+    localStorage.removeItem("guest_mode");
 
+    // Save token
+    if (data.token) {
+      localStorage.setItem("token", data.token);
+    }
 
-      // =====================================
-      // REMOVE GUEST MODE
-      // =====================================
+    // Save user
+    if (data.user) {
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
 
-      localStorage.removeItem("guest_mode");
+      setUser(data.user);
+    }
 
+    setIsGuest(false);
 
-      // =====================================
-      // SAVE TOKEN
-      // =====================================
+    // Navigate to chat
+    navigate("/chat");
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
-
-
-      // =====================================
-      // SAVE USER
-      // =====================================
-
-      if (data.user) {
-        localStorage.setItem("user", JSON.stringify(data.user));
-        setUser(data.user);
-      }
-
-
-      setIsGuest(false);
-
-      // ✅ Navigate to chat after register
-      navigate('/chat');
-
-      return data;
-
-    };
-
+    return data;
+  };
 
   // =========================================
   // CONTINUE AS GUEST
   // =========================================
 
-  const continueAsGuest =
-    () => {
+  const continueAsGuest = () => {
+    // Remove previous account data
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
 
-      // =====================================
-      // REMOVE PREVIOUS ACCOUNT DATA
-      // =====================================
+    // Enable guest mode
+    localStorage.setItem("guest_mode", "true");
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
+    setUser(null);
+    setIsGuest(true);
 
-
-      // =====================================
-      // ENABLE GUEST MODE (localStorage)
-      // =====================================
-
-      localStorage.setItem("guest_mode", "true");
-
-
-      setUser(null);
-      setIsGuest(true);
-
-      // ✅ Navigate to chat after guest login
-      navigate('/chat');
-
-    };
-
+    // Navigate to chat
+    navigate("/chat");
+  };
 
   // =========================================
   // LOGOUT
   // =========================================
 
-  const logout =
-    () => {
+  const logout = () => {
+    authService.logout();
 
-      authService.logout();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("guest_mode");
 
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("guest_mode");
+    setUser(null);
+    setIsGuest(false);
 
-      setUser(null);
-      setIsGuest(false);
-
-      // ✅ Navigate to home after logout
-      navigate('/');
-
-    };
-
+    // Navigate to home
+    navigate("/");
+  };
 
   // =========================================
-  // PROVIDER
+  // GOOGLE LOGIN
+  // =========================================
+
+  const loginWithGoogle = async (token) => {
+    try {
+      // Remove guest mode
+      localStorage.removeItem("guest_mode");
+
+      // Save Google JWT token
+      localStorage.setItem("token", token);
+
+      // Get Google user information
+      const data = await authService.getCurrentUser();
+
+      if (!data?.user) {
+        throw new Error(
+          "Unable to get Google user information."
+        );
+      }
+
+      // Save user
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.user)
+      );
+
+      setUser(data.user);
+      setIsGuest(false);
+
+      return data;
+    } catch (error) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+
+      throw error;
+    }
+  };
+
+  // =========================================
+  // CONTEXT VALUE
   // =========================================
 
   const value = {
     user,
     loading,
     isGuest,
+
     login,
     register,
     continueAsGuest,
     logout,
-    // ✅ Helper to check if authenticated
+    loginWithGoogle,
+
     isAuthenticated: !!user || isGuest,
   };
+
+  // =========================================
+  // PROVIDER
+  // =========================================
 
   return (
     <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
-
-  // =========================================
-// GOOGLE LOGIN
-// =========================================
-
-const loginWithGoogle =
-  async (token) => {
-
-    try {
-
-      localStorage.removeItem(
-        "guest_mode"
-      );
-
-
-      localStorage.setItem(
-        "token",
-        token
-      );
-
-
-      const data =
-        await authService.getCurrentUser();
-
-
-      if (!data?.user) {
-
-        throw new Error(
-          "Unable to get Google user information."
-        );
-
-      }
-
-
-      localStorage.setItem(
-
-        "user",
-
-        JSON.stringify(
-          data.user
-        )
-
-      );
-
-
-      setUser(
-        data.user
-      );
-
-
-      setIsGuest(
-        false
-      );
-
-
-      return data;
-
-
-    } catch (error) {
-
-      localStorage.removeItem(
-        "token"
-      );
-
-
-      localStorage.removeItem(
-        "user"
-      );
-
-
-      throw error;
-
-    }
-
-  };
-
 }
-
 
 // =========================================
 // HOOK
@@ -438,9 +278,13 @@ const loginWithGoogle =
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
+
   if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error(
+      "useAuth must be used within an AuthProvider"
+    );
   }
+
   return context;
 };
 

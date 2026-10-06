@@ -1,5 +1,5 @@
 /* =========================================================
-   BACKDROP: blur only, no dark wall
+   BACKDROP
 ========================================================= */
 .gpt-settings-backdrop {
   position: fixed;
@@ -16,14 +16,15 @@
 
   animation: backdropIn 0.15s ease;
 }
+
 html[data-theme="light"] .gpt-settings-backdrop {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.15);
 }
 
 @keyframes backdropIn { from { opacity: 0; } to { opacity: 1; } }
 
 /* =========================================================
-   MODAL — clearly above the blurred page
+   MODAL
 ========================================================= */
 .gpt-settings-modal {
   position: relative;
@@ -37,7 +38,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
 
   background: var(--bg-secondary);
   color: var(--text);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   box-shadow:
     0 30px 80px rgba(0, 0, 0, 0.35),
     0 4px 14px rgba(0, 0, 0, 0.2);
@@ -58,7 +59,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   flex-shrink: 0;
   padding: 14px;
   background: var(--bg);
-  border-right: 1px solid var(--border);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -93,7 +94,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   outline: none;
 }
 .gpt-search input::placeholder { color: var(--text-muted); }
-.gpt-search input:focus { border-color: var(--border-strong); }
+.gpt-search input:focus { border-color: var(--border-color); }
 
 .gpt-nav-list {
   flex: 1;
@@ -179,12 +180,12 @@ html[data-theme="light"] .gpt-settings-backdrop {
   margin-bottom: 22px;
   border-radius: 10px;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
 }
 .gpt-banner-head {
   display: flex; align-items: center; gap: 10px; margin-bottom: 8px;
 }
-.gpt-banner-icon { font-size: 15px; color: var(--text); }
+.gpt-banner-icon { font-size: 15px; color: var(--accent-color); }
 .gpt-banner-title { font-size: 13.5px; font-weight: 600; color: var(--text); }
 .gpt-banner-close {
   margin-left: auto; border: none; background: transparent;
@@ -203,7 +204,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
 .gpt-banner-cta {
   padding: 8px 14px;
   border-radius: 8px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   background: var(--bg-tertiary);
   color: var(--text);
   font-size: 13px; font-weight: 500;
@@ -217,7 +218,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   display: flex; flex-direction: column;
   border-radius: 12px;
   background: var(--bg);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-color);
   overflow: visible;
 }
 .gpt-group + .gpt-group { margin-top: 20px; }
@@ -231,7 +232,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   color: var(--text);
   position: relative;
 }
-.gpt-row + .gpt-row { border-top: 1px solid var(--border); }
+.gpt-row + .gpt-row { border-top: 1px solid var(--border-color); }
 
 .gpt-row-label { color: var(--text); font-size: 13.5px; }
 .gpt-row-value { color: var(--text-secondary); font-size: 13px; }
@@ -264,7 +265,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
 .dd-trigger:hover,
 .dd-trigger.open {
   background: var(--bg-tertiary);
-  border-color: var(--border);
+  border-color: var(--border-color);
   color: var(--text);
 }
 
@@ -286,7 +287,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   padding: 6px;
   border-radius: 10px;
   background: var(--bg-secondary);
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   box-shadow: 0 16px 40px rgba(0, 0, 0, 0.35);
   z-index: 50;
   animation: ddIn 0.15s ease;
@@ -326,7 +327,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   width: 38px; height: 22px;
   border: none;
   border-radius: 999px;
-  background: var(--border-strong);
+  background: var(--border-color);
   cursor: pointer;
   flex-shrink: 0;
   transition: background 0.2s ease;
@@ -343,24 +344,60 @@ html[data-theme="light"] .gpt-settings-backdrop {
 .gpt-toggle.active span { transform: translateX(16px); }
 
 /* =========================================================
+   RANGE SLIDERS
+========================================================= */
+.gpt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 180px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border-color);
+  outline: none;
+  cursor: pointer;
+  accent-color: var(--accent-color);
+}
+
+.gpt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.gpt-range::-webkit-slider-thumb:hover { transform: scale(1.15); }
+
+.gpt-range::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-color);
+  cursor: pointer;
+}
+
+/* =========================================================
    BUTTONS
 ========================================================= */
 .gpt-danger-btn {
   padding: 8px 14px;
   border-radius: 8px;
-  border: 1px solid var(--danger);
+  border: 1px solid #ef4444;
   background: transparent;
-  color: var(--danger);
+  color: #ef4444;
   font-size: 13px; font-weight: 500;
   cursor: pointer;
   transition: background 0.15s ease;
 }
-.gpt-danger-btn:hover { background: var(--danger-bg); }
+.gpt-danger-btn:hover { background: rgba(239, 68, 68, 0.1); }
 
 .gpt-outline-btn {
   padding: 8px 14px;
   border-radius: 8px;
-  border: 1px solid var(--border-strong);
+  border: 1px solid var(--border-color);
   background: transparent;
   color: var(--text);
   font-size: 13px; font-weight: 500;
@@ -368,6 +405,12 @@ html[data-theme="light"] .gpt-settings-backdrop {
   transition: background 0.15s ease;
 }
 .gpt-outline-btn:hover { background: var(--bg-hover); }
+
+.gpt-preview-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
 
 /* =========================================================
    EMPTY STATE
@@ -379,9 +422,7 @@ html[data-theme="light"] .gpt-settings-backdrop {
   color: var(--text-secondary); text-align: center;
 }
 .gpt-empty svg { font-size: 28px; color: var(--text-muted); }
-/* =========================================================
-   EMPTY STATE (continued)
-========================================================= */
+
 .gpt-empty h3 {
   margin: 6px 0 0;
   font-size: 15px;
@@ -398,26 +439,20 @@ html[data-theme="light"] .gpt-settings-backdrop {
 }
 
 /* =========================================================
-   OPTIONAL: HIGH-CONTRAST MODE
-   Set by Settings.jsx via document.documentElement.setAttribute('data-contrast', 'high')
+   HIGH-CONTRAST MODE
 ========================================================= */
 html[data-contrast="high"] {
   --text-secondary: var(--text);
   --text-muted: var(--text-secondary);
-  --border: var(--border-strong);
+  --border-color: var(--text-muted);
 }
 
 html[data-contrast="high"] .gpt-settings-modal {
   border-width: 2px;
 }
 
-html[data-contrast="high"] .gpt-row + .gpt-row,
-html[data-contrast="high"] .gpt-group {
-  border-color: var(--border-strong);
-}
-
 /* =========================================================
-   OPTIONAL: focus ring for keyboard users
+   FOCUS RINGS
 ========================================================= */
 .gpt-nav-item:focus-visible,
 .gpt-nav-back:focus-visible,
@@ -454,7 +489,7 @@ html[data-contrast="high"] .gpt-group {
     width: 100%;
     max-height: 46vh;
     border-right: none;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid var(--border-color);
     padding: 12px;
   }
 
@@ -499,6 +534,10 @@ html[data-contrast="high"] .gpt-group {
     left: 0;
     min-width: 160px;
   }
+
+  .gpt-range {
+    width: 120px;
+  }
 }
 
 @media (max-width: 480px) {
@@ -531,6 +570,10 @@ html[data-contrast="high"] .gpt-group {
   }
 
   .gpt-row-desc { font-size: 12px; }
+
+  .gpt-range {
+    width: 100px;
+  }
 }
 
 /* =========================================================

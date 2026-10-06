@@ -11,10 +11,10 @@
 
   flex-shrink: 0;
 
-  background: #0b0b0b;
-  color: #ffffff;
+  background: var(--sidebar);
+  color: var(--text);
 
-  border-right: 1px solid #242424;
+  border-right: 1px solid var(--border-color);
 
   overflow: hidden;
 
@@ -62,7 +62,7 @@
   border-radius: 8px;
 
   background: transparent;
-  color: #d1d1d1;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -71,8 +71,8 @@
 
 
 .sidebar-menu-btn:hover {
-  background: #1d1d1d;
-  color: #ffffff;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 
@@ -92,7 +92,7 @@
   border-radius: 8px;
 
   background: transparent;
-  color: #d1d1d1;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -125,7 +125,7 @@
 
   border-radius: 50%;
 
-  background: #ffffff;
+  background: var(--text);
 
   display: block;
 }
@@ -158,8 +158,8 @@
   border: none;
   border-radius: 9px;
 
-  background: #1b1b1b;
-  color: #ffffff;
+  background: var(--bg-tertiary);
+  color: var(--text);
 
   cursor: pointer;
 
@@ -173,7 +173,7 @@
 
 
 .new-chat-btn:hover {
-  background: #252525;
+  background: var(--bg-hover);
 }
 
 
@@ -205,7 +205,7 @@
   padding: 4px 8px 12px;
 
   scrollbar-width: thin;
-  scrollbar-color: #3a3a3a transparent;
+  scrollbar-color: var(--border-color) transparent;
 }
 
 
@@ -220,7 +220,7 @@
 
 
 .sidebar-scroll::-webkit-scrollbar-thumb {
-  background: #333333;
+  background: var(--border-color);
   border-radius: 10px;
 }
 
@@ -244,7 +244,7 @@
   border-radius: 8px;
 
   background: transparent;
-  color: #d0d0d0;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -255,14 +255,14 @@
 
 
 .sidebar-btn:hover {
-  background: #1b1b1b;
-  color: #ffffff;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 
 .sidebar-btn.active {
-  background: #202020;
-  color: #ffffff;
+  background: var(--bg-tertiary);
+  color: var(--text);
 }
 
 
@@ -286,16 +286,16 @@
 
   padding: 9px 11px;
 
-  border: 1px solid #2b2b2b;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
 
-  background: #171717;
+  background: var(--input-bg);
 }
 
 
 .sidebar-search svg {
   flex-shrink: 0;
-  color: #888;
+  color: var(--text-muted);
 }
 
 
@@ -307,14 +307,14 @@
 
   background: transparent;
 
-  color: #fff;
+  color: var(--text);
 
   font-size: 13px;
 }
 
 
 .sidebar-search input::placeholder {
-  color: #777;
+  color: var(--text-muted);
 }
 
 
@@ -326,7 +326,7 @@
 
   background: transparent;
 
-  color: #777;
+  color: var(--text-muted);
 
   cursor: pointer;
 }
@@ -367,7 +367,7 @@
 
   padding: 0 9px;
 
-  color: #858585;
+  color: var(--text-muted);
 
   font-size: 12px;
   font-weight: 500;
@@ -433,7 +433,7 @@
 
   background: transparent;
 
-  color: #cfcfcf;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -446,14 +446,14 @@
 
 
 .chat-item:hover {
-  background: #1b1b1b;
-  color: #ffffff;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 
 .chat-item.active-chat {
-  background: #202020;
-  color: #ffffff;
+  background: var(--bg-tertiary);
+  color: var(--text);
 }
 
 
@@ -462,7 +462,7 @@
 
   font-size: 15px;
 
-  color: #a0a0a0;
+  color: var(--text-muted);
 }
 
 
@@ -497,7 +497,7 @@
   border-radius: 6px;
 
   background: transparent;
-  color: #888888;
+  color: var(--text-muted);
 
   cursor: pointer;
 
@@ -518,7 +518,7 @@
 
 
 .chat-more-btn:hover {
-  background: #292929;
+  background: var(--bg-hover);
   color: #ff6b6b;
 }
 
@@ -540,7 +540,7 @@
 
   padding: 20px 15px;
 
-  color: #777777;
+  color: var(--text-muted);
 
   text-align: center;
 }
@@ -548,13 +548,13 @@
 
 .empty-history svg {
   font-size: 25px;
-  color: #555555;
+  color: var(--text-muted);
 }
 
 
 .empty-history span {
   font-size: 13px;
-  color: #a0a0a0;
+  color: var(--text-secondary);
 }
 
 
@@ -569,9 +569,9 @@
 
   flex-shrink: 0;
 
-  border-top: 1px solid #1d1d1d;
+  border-top: 1px solid var(--border-color);
 
-  background: #0b0b0b;
+  background: var(--sidebar);
 }
 
 
@@ -625,9 +625,9 @@
 
   z-index: 1100;
 
-  background: #151515;
+  background: var(--card);
 
-  border-right: 1px solid #292929;
+  border-right: 1px solid var(--border-color);
 
   box-shadow:
     8px 0 30px rgba(0, 0, 0, 0.25);
@@ -668,14 +668,14 @@
 
   padding: 18px;
 
-  border-bottom: 1px solid #292929;
+  border-bottom: 1px solid var(--border-color);
 }
 
 
 .sidebar-panel-header h2 {
   margin: 0;
 
-  color: #fff;
+  color: var(--text);
 
   font-size: 18px;
 }
@@ -686,7 +686,7 @@
 
   background: transparent;
 
-  color: #aaa;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -710,7 +710,7 @@
 
   padding: 50px 25px;
 
-  color: #777;
+  color: var(--text-muted);
 }
 
 
@@ -724,7 +724,7 @@
 .panel-empty h3 {
   margin: 0 0 8px;
 
-  color: #ddd;
+  color: var(--text);
 
   font-size: 16px;
 }
@@ -757,9 +757,8 @@
   border: none;
   border-radius: 8px;
 
-  background: #fff;
-
-  color: #111;
+  background: var(--accent);
+  color: var(--bg);
 
   cursor: pointer;
 
@@ -787,7 +786,7 @@
 
   background: transparent;
 
-  color: #ccc;
+  color: var(--text-secondary);
 
   text-align: left;
 
@@ -800,8 +799,8 @@
 
 
 .settings-panel button:hover {
-  background: #202020;
-  color: #fff;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 
@@ -821,10 +820,10 @@
 
   padding: 5px;
 
-  border: 1px solid #303030;
+  border: 1px solid var(--border-color);
   border-radius: 10px;
 
-  background: #1a1a1a;
+  background: var(--card);
 
   box-shadow:
     0 12px 30px rgba(0, 0, 0, 0.45);
@@ -864,7 +863,7 @@
 
   background: transparent;
 
-  color: #d0d0d0;
+  color: var(--text-secondary);
 
   cursor: pointer;
 
@@ -875,8 +874,8 @@
 
 
 .conversation-menu button:hover {
-  background: #292929;
-  color: #ffffff;
+  background: var(--bg-hover);
+  color: var(--text);
 }
 
 
@@ -924,11 +923,11 @@
   padding: 20px;
 
   border:
-    1px solid #303030;
+    1px solid var(--border-color);
 
   border-radius: 15px;
 
-  background: #151515;
+  background: var(--card);
 
   box-shadow:
     0 25px 70px
@@ -978,7 +977,7 @@
 .rename-modal-header h3 {
   margin: 0;
 
-  color: #ffffff;
+  color: var(--text);
 
   font-size: 17px;
 }
@@ -998,16 +997,16 @@
 
   background: transparent;
 
-  color: #999999;
+  color: var(--text-muted);
 
   cursor: pointer;
 }
 
 
 .rename-modal-header button:hover {
-  background: #252525;
+  background: var(--bg-hover);
 
-  color: #ffffff;
+  color: var(--text);
 }
 
 
@@ -1019,22 +1018,22 @@
   padding: 0 13px;
 
   border:
-    1px solid #353535;
+    1px solid var(--border-color);
 
   border-radius: 9px;
 
   outline: none;
 
-  background: #0d0d0d;
+  background: var(--input-bg);
 
-  color: #ffffff;
+  color: var(--text);
 
   font-size: 14px;
 }
 
 
 .rename-modal input:focus {
-  border-color: #777777;
+  border-color: var(--text-muted);
 }
 
 
@@ -1071,30 +1070,30 @@
 
 
 .rename-cancel {
-  border: 1px solid #353535;
+  border: 1px solid var(--border-color);
 
   background: transparent;
 
-  color: #d0d0d0;
+  color: var(--text-secondary);
 }
 
 
 .rename-cancel:hover {
-  background: #242424;
+  background: var(--bg-hover);
 }
 
 
 .rename-save {
   border: none;
 
-  background: #ffffff;
+  background: var(--accent);
 
-  color: #111111;
+  color: var(--bg);
 }
 
 
 .rename-save:hover {
-  background: #e8e8e8;
+  background: var(--accent-hover);
 }
 
 
@@ -1134,8 +1133,8 @@
     border: none;
     border-radius: 8px;
 
-    background: rgba(20, 20, 20, 0.85);
-    color: #ffffff;
+    background: var(--card);
+    color: var(--text);
 
     font-size: 19px;
 
@@ -1146,7 +1145,7 @@
   }
 
   .mobile-sidebar-toggle:active {
-    background: rgba(40, 40, 40, 0.9);
+    background: var(--bg-hover);
   }
 
 }
@@ -1158,8 +1157,6 @@
 
 @media (max-width: 768px) {
 
-  /* Sidebar is fixed, off-screen by default, full height,
-     and sits ABOVE the chat content instead of squeezing it */
   .sidebar {
     position: fixed;
     top: 0;
@@ -1182,8 +1179,6 @@
     box-shadow: 12px 0 40px rgba(0, 0, 0, 0.5);
   }
 
-  /* Collapsed state is irrelevant on mobile — drawer is
-     either fully open or fully hidden */
   .sidebar.collapsed {
     width: 260px;
   }
@@ -1195,12 +1190,10 @@
     padding-right: 10px;
   }
 
-  /* Show the close (X) button on mobile */
   .sidebar-mobile-close {
     display: flex;
   }
 
-  /* Backdrop dims the chat behind the open drawer */
   .sidebar-backdrop.visible {
     display: block;
 
@@ -1219,9 +1212,6 @@
     to { opacity: 1; }
   }
 
-  /* Images/Library/Projects panel takes full width on mobile
-     instead of a fixed 320px offset from a sidebar that's
-     no longer part of the layout flow */
   .sidebar-panel {
     left: 0 !important;
     width: 100%;

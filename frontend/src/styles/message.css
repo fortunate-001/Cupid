@@ -1,137 +1,364 @@
-.message{
+/* =========================================================
+   MESSAGE WRAPPER
+========================================================= */
 
-    display:flex;
-
-    width:100%;
-
-    margin:18px 0;
-
+.message {
+  width: 100%;
+  display: flex;
+  margin-bottom: 16px;
+  animation: messageIn 0.25s ease;
 }
 
-.message.user{
-
-    justify-content:flex-end;
-
+@keyframes messageIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.message.assistant{
-
-    justify-content:flex-start;
-
+/* USER — right aligned */
+.message.user {
+  justify-content: flex-end;
 }
 
-.bubble{
-
-    position:relative;
-
-    max-width:75%;
-
-    padding:18px 22px;
-
-    border-radius:20px;
-
-    background:var(--card);
-
-    color:var(--text);
-
-    line-height:1.8;
-
-    border:1px solid var(--border);
-
-    word-break:break-word;
-
-    transition:var(--transition);
-
+/* ASSISTANT — left aligned */
+.message.assistant {
+  justify-content: flex-start;
 }
 
-/* USER MESSAGE */
+/* =========================================================
+   BUBBLE
+========================================================= */
 
-.message.user .bubble{
-
-    background:#242424;
-
-    color:#ffffff;
-
-    border:1px solid #333333;
-
+.message .bubble {
+  max-width: min(720px, 85%);
+  padding: 14px 18px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.65;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  position: relative;
+  color: var(--text);
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
 }
 
-/* AI MESSAGE */
-
-.message.assistant .bubble{
-
-    background:#181818;
-
+/* USER bubble */
+.message.user .bubble {
+  background: var(--accent);
+  color: var(--bg);
+  border-color: transparent;
+  border-bottom-right-radius: 6px;
 }
 
-/* COPY BUTTON */
-
-.message-actions{
-
-    display:flex;
-
-    justify-content:flex-end;
-
-    margin-top:12px;
-
+/* ASSISTANT bubble */
+.message.assistant .bubble {
+  background: var(--card);
+  color: var(--text);
+  border-bottom-left-radius: 6px;
 }
 
-.icon-btn{
+/* =========================================================
+   MARKDOWN CONTENT INSIDE BUBBLES
+========================================================= */
 
-    width:32px;
-
-    height:32px;
-
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    border-radius:8px;
-
-    background:transparent;
-
-    color:var(--text-secondary);
-
-    transition:var(--transition);
-
+.message .bubble p {
+  margin: 0 0 10px;
 }
 
-.icon-btn:hover{
-
-    background:#2a2a2a;
-
-    color:white;
-
+.message .bubble p:last-child {
+  margin-bottom: 0;
 }
 
-/* IMAGE */
-
-.generated-image{
-
-    width:100%;
-
-    max-width:500px;
-
-    border-radius:14px;
-
+.message .bubble h1,
+.message .bubble h2,
+.message .bubble h3,
+.message .bubble h4 {
+  margin: 16px 0 8px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
-/* CODE */
+.message .bubble h1 { font-size: 20px; }
+.message .bubble h2 { font-size: 18px; }
+.message .bubble h3 { font-size: 16px; }
+.message .bubble h4 { font-size: 15px; }
 
-pre{
-
-    margin-top:14px;
-
-    border-radius:12px;
-
-    overflow:auto;
-
+.message .bubble ul,
+.message .bubble ol {
+  margin: 8px 0;
+  padding-left: 22px;
 }
 
-code{
+.message .bubble li {
+  margin-bottom: 4px;
+}
 
-    font-size:.9rem;
+.message .bubble a {
+  color: var(--accent-color);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
 
+.message .bubble blockquote {
+  margin: 10px 0;
+  padding: 6px 12px;
+  border-left: 3px solid var(--border-color);
+  color: var(--text-secondary);
+}
+
+.message .bubble code {
+  font-family: "Fira Code", "Consolas", monospace;
+  font-size: 13.5px;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.message .bubble pre {
+  margin: 10px 0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.message .bubble pre code {
+  padding: 0;
+  background: transparent;
+}
+
+.message .bubble hr {
+  margin: 14px 0;
+  border: none;
+  border-top: 1px solid var(--border-color);
+}
+
+.message .bubble table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.message .bubble th,
+.message .bubble td {
+  padding: 8px 10px;
+  border: 1px solid var(--border-color);
+  text-align: left;
+}
+
+.message .bubble th {
+  background: var(--bg-hover);
+  font-weight: 600;
+}
+
+/* =========================================================
+   GENERATED IMAGE
+========================================================= */
+
+.message .bubble .generated-image {
+  display: block;
+  max-width: 100%;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+/* =========================================================
+   MESSAGE ACTIONS (copy / read aloud)
+========================================================= */
+
+.message-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-color);
+}
+
+.message.user .message-actions {
+  border-top-color: rgba(255, 255, 255, 0.15);
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+  color: var(--text-secondary);
+  transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.icon-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text);
+}
+
+.icon-btn:active {
+  transform: scale(0.92);
+}
+
+.icon-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.icon-btn.speaking {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+}
+
+.speech-loader {
+  animation: speechSpin 1s linear infinite;
+}
+
+@keyframes speechSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* =========================================================
+   TYPING INDICATOR (THREE BOUNCING DOTS)
+========================================================= */
+
+.typing {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+
+  padding: 14px 18px;
+  border-radius: 18px;
+  border-bottom-left-radius: 6px;
+
+  background: var(--card);
+  border: 1px solid var(--border-color);
+
+  margin-bottom: 16px;
+  width: fit-content;
+
+  animation: messageIn 0.25s ease;
+}
+
+.typing span {
+  display: block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(1) { animation-delay: 0s; }
+.typing span:nth-child(2) { animation-delay: 0.15s; }
+.typing span:nth-child(3) { animation-delay: 0.3s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+    opacity: 0.35;
+  }
+  30% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+  .message .bubble {
+    max-width: 92%;
+    padding: 12px 14px;
+    font-size: 14.5px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+
+  .typing {
+    padding: 12px 14px;
+  }
+
+  .typing span {
+    width: 6px;
+    height: 6px;
+  }
+}
+
+/* =========================================================
+   REDUCED MOTION
+========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  .message,
+  .typing,
+  .typing span {
+    animation: none !important;
+  }
+}
+
+
+/* =========================================================
+   MOBILE — square-ish bubbles
+========================================================= */
+
+@media (max-width: 600px) {
+  .message .bubble {
+    max-width: 78%;              /* was 85% — narrower */
+    padding: 11px 14px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.55;
+    word-break: break-word;
+  }
+
+  /* For SHORT messages, don't stretch wide */
+  .message .bubble:has(p:only-child) {
+    max-width: fit-content;
+    min-width: 60px;
+  }
+
+  .message.user .bubble {
+    border-bottom-right-radius: 5px;
+  }
+
+  .message.assistant .bubble {
+    border-bottom-left-radius: 5px;
+  }
+
+  .message-actions {
+    margin-top: 8px;
+    padding-top: 6px;
+  }
+
+  .icon-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 14px;
+  }
+}
+
+/* Extra small phones */
+@media (max-width: 400px) {
+  .message .bubble {
+    max-width: 82%;
+    padding: 10px 12px;
+    font-size: 14px;
+  }
 }
